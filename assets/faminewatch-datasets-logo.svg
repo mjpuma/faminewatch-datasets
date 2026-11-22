@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="400" viewBox="0 0 1080 400" role="img" aria-labelledby="title description">
+<title id="title">FamineWatch Datasets</title>
+<desc id="description">A gold and navy data-archive emblem combining an agricultural grain stalk, a historical timeline, and an interconnected global grid.</desc>
+<defs>
+ <linearGradient id="globe" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ECF5F8"/><stop offset="1" stop-color="#D8E8F0"/></linearGradient>
+ <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#003865"/><stop offset="1" stop-color="#205F85"/></linearGradient>
+</defs>
+<rect width="1080" height="400" fill="#fff"/>
+<circle cx="194" cy="198" r="144" fill="#fff" stroke="#003865" stroke-width="8"/>
+<circle cx="194" cy="198" r="131" fill="url(#globe)"/>
+<circle cx="194" cy="198" r="110" fill="none" stroke="#8AB4C9" stroke-width="2.5"/>
+<ellipse cx="194" cy="198" rx="64" ry="110" stroke="#8AB4C9" stroke-width="2.5" fill="none"/>
+<path d="M84 198H304 M100 146H288 M100 250H288" fill="none" stroke="#8AB4C9" stroke-width="2.5"/>
+<path d="M105 268 L130 255 L149 264 L169 229 L192 241 L214 204 L237 219 L261 165 L286 171" fill="none" stroke="#003865" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M106 280H285" stroke="#003865" stroke-width="3.5" stroke-linecap="round"/>
+<path d="M122 280V295 M179 280V295 M239 280V295 M283 280V295" stroke="#003865" stroke-width="4" stroke-linecap="round"/>
+<g fill="#C49A4B" stroke="#fff" stroke-width="2">
+ <circle cx="149" cy="264" r="6"/><circle cx="192" cy="241" r="6"/><circle cx="237" cy="219" r="6"/><circle cx="261" cy="165" r="8"/>
+</g>
+<!-- Wheat stem, distinct from the time-series -->
+<path d="M189 235C189 206 196 168 197 118" stroke="#9B7437" stroke-width="4" fill="none" stroke-linecap="round"/>
+<g fill="#D6B265" stroke="#A77E39" stroke-width="1.3">
+ <path d="M196 147Q180 142 175 126Q191 127 196 147Z"/>
+ <path d="M197 136Q211 127 214 112Q200 116 197 136Z"/>
+ <path d="M197 164Q181 160 177 145Q192 146 197 164Z"/>
+ <path d="M197 157Q214 150 217 136Q203 139 197 157Z"/>
+ <path d="M198 123Q189 109 198 96Q206 110 198 123Z"/>
+</g>
+<text x="371" y="175" font-family="Georgia, 'Times New Roman', serif" font-size="75" font-weight="bold" fill="#003865" letter-spacing="-2">FamineWatch</text>
+<path d="M376 193H950" stroke="#C49A4B" stroke-width="5" stroke-linecap="round"/>
+<text x="376" y="252" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="bold" letter-spacing="9" fill="#245675">DATASETS</text>
+<text x="376" y="299" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#576F80" letter-spacing=".8">Historical famines and food disruptions</text>
+<text x="376" y="333" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#987748" letter-spacing="1.8">RESEARCH COMPILATION  ·  BETA</text>
+</svg>
