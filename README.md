@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/faminewatch-datasets-logo.svg" width="700" alt="FamineWatch Datasets logo showing a wheat stalk, global network and historical time-series" /></p>
+
 # Famine Database (Beta)
 
 This folder contains the **Beta version** of the *Compilation of Select Famines and Food Disruptions Around the World*, a curated dataset synthesizing documented famine events from historical literature and humanitarian assessments.
