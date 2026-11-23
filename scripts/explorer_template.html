@@ -116,6 +116,7 @@ a{color:var(--accent-ink)}
       <label>from <input type="number" id="euFrom" value="1250" min="1250" max="1800"></label>
       <label>to <input type="number" id="euTo" value="1800" min="1250" max="1800"></label>
       <label><input type="checkbox" id="euBand" checked> shade years with famine in ≥4 regions</label>
+      <label title="Table A1 prints Italy 1539–49; Alfani & Ó Gráda's data give 1539–40"><input type="checkbox" id="euCorr"> use corrected Italy 1539–40</label>
     </div>
     <div id="euChart"></div>
     <div class="legend"><span><i style="background:var(--series-1)"></i>Famine year recorded</span><span><i style="background:var(--band);border:1px solid var(--border)"></i>Famine in ≥4 of 9 regions</span><span class="small">Top strip: number of regions with famine that year</span></div>
@@ -201,9 +202,11 @@ const el = (t, a={}, p) => { const e=document.createElementNS(NS,t); for(const k
 const esc = s => s==null ? "" : String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const yr = y => y<0 ? `${-y} BCE` : `${y}`;
 const EV = DATA.events, EP = DATA.europe.episodes, REG = DATA.europe.regions;
-const SRC = ["Puma & Chon (2025) beta compilation","Ljungqvist et al. (2024) Table A1","Puma & Chon compilation — v0.2 additions"];
-const SRCLAB = {[SRC[0]]:"Puma & Chon compilation (beta)",[SRC[1]]:"Ljungqvist et al. (2024), Table A1",[SRC[2]]:"v0.2 additions (2024–25 IPC)"};
-const SRCVAR = {[SRC[0]]:"var(--series-1)",[SRC[1]]:"var(--series-2)",[SRC[2]]:"var(--series-3)"};
+const SRC = ["Puma & Chon (2025) beta compilation","Ljungqvist et al. (2024) Table A1","Alfani & Ó Gráda (2017) Table 1.1, 1800–1900","Puma & Chon compilation — v0.2 additions"];
+const SRCLAB = {[SRC[0]]:"Puma & Chon compilation (beta)",[SRC[1]]:"Ljungqvist et al. (2024), Table A1",[SRC[2]]:"Alfani & Ó Gráda (2017), Table 1.1 (1800–1900)",[SRC[3]]:"v0.2 additions"};
+// colour by group (3 groups keeps the dot timeline within the all-pairs-safe palette)
+const GROUPS = [["Puma & Chon compilation",[SRC[0]],"var(--series-1)"],["European regional chronologies",[SRC[1],SRC[2]],"var(--series-2)"],["v0.2 additions",[SRC[3]],"var(--series-3)"]];
+const SRCVAR = {}; GROUPS.forEach(([,ss,c])=>ss.forEach(s=>SRCVAR[s]=c));
 
 // theme toggle
 $("#themeBtn").onclick = () => { const r=document.documentElement; const dark = getComputedStyle($("#root")).colorScheme==="dark"; r.setAttribute("data-theme", dark?"light":"dark"); drawAll(); };
@@ -225,14 +228,15 @@ function hideTip(){ tip.style.display="none"; }
 $$("nav button").forEach(b=>b.onclick=()=>{ $$("nav button").forEach(x=>x.setAttribute("aria-selected",x===b)); $$(".panel").forEach(p=>p.classList.toggle("on", p.id==="p-"+b.dataset.tab)); drawAll(); });
 
 // ---------------- Europe heatmap
-const yearMap = {}; // region|year -> episode
-EP.forEach(d=>{ for(let y=d.start_year;y<=d.end_year;y++){ (yearMap[d.region+"|"+y] ||= []).push(d); } });
-const countByYear = {}; for(let y=1250;y<=1800;y++){ countByYear[y]=REG.filter(r=>yearMap[r+"|"+y]).length; }
+let yearMap = {}, countByYear = {};
+const endOf = d => ($("#euCorr") && $("#euCorr").checked) ? d.end_year_corrected : d.end_year;
+function buildYearMap(){ yearMap={}; EP.forEach(d=>{ for(let y=d.start_year;y<=endOf(d);y++){ (yearMap[d.region+"|"+y] ||= []).push(d); } }); countByYear={}; for(let y=1250;y<=1800;y++){ countByYear[y]=REG.filter(r=>yearMap[r+"|"+y]).length; } }
+buildYearMap();
 let euRange=[1250,1800];
 function epDetail(d){
   return `<h3>${esc(d.region)} · ${esc(d.as_printed)}</h3><dl>
   <dt>Episode ID</dt><dd>${esc(d.episode_id)}</dd>
-  <dt>Years</dt><dd>${d.start_year}–${d.end_year} (${d.n_years} yr)</dd>
+  <dt>Years</dt><dd>${d.start_year}–${d.end_year} (${d.n_years} yr)${d.end_year_corrected!==d.end_year?` · corrected: ${d.start_year}–${d.end_year_corrected}`:""}</dd>
   <dt>Chronology</dt><dd>${esc(d.citation)}</dd>
   <dt>Regional sources</dt><dd>${esc(d.regional_sources)}</dd>
   ${d.note?`<dt>Note</dt><dd>${esc(d.note)}</dd>`:""}
@@ -263,7 +267,7 @@ function drawEU(){
     const t=el("text",{x:lab-8,y:ry+rowH/2+4,"text-anchor":"end"},svg); t.textContent=r; t.style.fill="var(--text-primary)";
   });
   EP.forEach(dd=>{
-    const s=Math.max(dd.start_year,a), e=Math.min(dd.end_year,b); if(s>e) return;
+    const s=Math.max(dd.start_year,a), e=Math.min(endOf(dd),b); if(s>e) return;
     const i=REG.indexOf(dd.region), ry=y0+i*rowH;
     const rect=el("rect",{x:x(s),y:ry+3,width:Math.max((e-s+1)*cw-(cw>4?1:0),1.5),height:rowH-6,rx:Math.min(3,cw/2),fill:"var(--series-1)"},svg);
     rect.style.cursor="pointer";
@@ -296,13 +300,14 @@ function drawEUBars(){
 $$("[data-range]").forEach(b=>b.onclick=()=>{ $$("[data-range]").forEach(x=>x.setAttribute("aria-pressed",x===b)); euRange=b.dataset.range.split(",").map(Number); $("#euFrom").value=euRange[0]; $("#euTo").value=euRange[1]; drawEU(); drawEUBars(); });
 ["#euFrom","#euTo"].forEach(s=>$(s).onchange=()=>{ let a=+$("#euFrom").value,b=+$("#euTo").value; a=Math.max(1250,Math.min(a,1800)); b=Math.max(a,Math.min(b,1800)); euRange=[a,b]; $$("[data-range]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.range===a+","+b)); drawEU(); drawEUBars(); });
 $("#euBand").onchange=drawEU;
+$("#euCorr").onchange=()=>{ buildYearMap(); drawEU(); drawEUBars(); };
 
 // ---------------- Global timeline
 let tlRange=[500,2026];
 const MACROS=[...new Set(EV.map(e=>e.macro_region))].sort((a,b)=>EV.filter(e=>e.macro_region===b).length-EV.filter(e=>e.macro_region===a).length);
 const TYPES=[...new Set(EV.map(e=>e.event_type))].sort();
 TYPES.forEach(t=>$("#tlType").insertAdjacentHTML("beforeend",`<option>${esc(t)}</option>`));
-$("#tlLegend").innerHTML=SRC.map(s=>`<span><i style="background:${SRCVAR[s]};border-radius:50%"></i>${esc(SRCLAB[s])} (${EV.filter(e=>e.source_dataset===s).length})</span>`).join("");
+$("#tlLegend").innerHTML=GROUPS.map(([g,ss,c])=>`<span><i style="background:${c};border-radius:50%"></i>${esc(g)} (${EV.filter(e=>ss.includes(e.source_dataset)).length})</span>`).join("");
 function evDetail(e){
   return `<h3>${esc(e.area||"—")} · ${esc(e.year_label)}</h3><dl>
   <dt>Event ID</dt><dd>${esc(e.event_id)}</dd>
@@ -326,7 +331,7 @@ function drawTL(){
   const svg=el("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Timeline of events by region"},host);
   MACROS.forEach((m,i)=>{ const y=top+i*rowH; el("line",{x1:lab,x2:W-padR,y1:y+rowH/2,y2:y+rowH/2,stroke:"var(--grid)"},svg); const t=el("text",{x:lab-8,y:y+rowH/2+4,"text-anchor":"end"},svg); t.textContent=m; t.style.fill="var(--text-primary)"; });
   // deterministic vertical jitter by source
-  const off={[SRC[0]]:-7,[SRC[1]]:0,[SRC[2]]:7};
+  const off={[SRC[0]]:-7,[SRC[1]]:0,[SRC[2]]:0,[SRC[3]]:7};
   ev.forEach(e=>{ const i=MACROS.indexOf(e.macro_region), cy=top+i*rowH+rowH/2+(off[e.source_dataset]||0);
     const c=el("circle",{cx:x(e.start_year),cy,r:4,fill:SRCVAR[e.source_dataset],stroke:"var(--surface-1)","stroke-width":1.5},svg);
     c.style.cursor="pointer";

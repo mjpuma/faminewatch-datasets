@@ -12,9 +12,10 @@ A curated, citable compilation of documented famines and severe food-system disr
 
 | File | Contents |
 |---|---|
-| `data/faminewatch_events.csv` / `.json` | **All records** (619): the beta compilation (381, corrected and flagged), v0.2 additions (2), and the European regional famine episodes (236). One row per event. |
+| `data/faminewatch_events.csv` / `.json` | **All records** (629): the beta compilation (379 after removing 2), v0.2 additions (3), the European regional famine episodes 1250–1800 (236), and Alfani & Ó Gráda's 1800–1900 regional entries (11). One row per event. |
 | `data/europe_famine_episodes_1250-1800_LjungqvistEtAl2024.csv` | European famine episodes by region (236), as printed in Ljungqvist et al. (2024), Table A1, with regional sources and notes. |
-| `data/europe_famine_region_year_1250-1800_LjungqvistEtAl2024.csv` | The same chronology as a long region × year table (9 regions × 551 years; `famine` = 1/0). |
+| `data/europe_famine_region_year_1250-1800_LjungqvistEtAl2024.csv` | The same chronology as a long region × year table (9 regions × 551 years; `famine` = 1/0 as printed; `famine_corrected` applies the Italy 1539–40 fix). |
+| `data/europe_famine_episodes_1800-1900_AlfaniOGrada2017_Table1-1.csv` | 19th-century regional famine years from Alfani & Ó Gráda (2017), Table 1.1 (major multi-region famines only). |
 | `data/europe_famine_region_year_wide_1250-1800_LjungqvistEtAl2024.csv` | Wide year × region 0/1 matrix — ready for time-series analysis. |
 | `data/references.csv` | Full citations (corrected beta reference list + v0.2 sources). |
 | `data/changelog_v0.2.csv` | Every correction applied in v0.2 (old → new value, reason) and every item flagged for review. |
@@ -53,7 +54,7 @@ The European records are the regional famine-year list of **Ljungqvist, Seim & C
 **Transcription and checks.** Table A1 was extracted from the published PDF using text positions. Checks: (1) the extracted sequence of 1,507 characters of year values matches the PDF text exactly; (2) Central Europe has 22 famine periods in 1500–1800, matching the count reported by Esmaili et al. (preprint); (3) years with famine in ≥ 4 regions match Ljungqvist et al.'s Table A2, apart from three discrepancies that are internal to the published tables (see below).
 
 **Known issues in the published table (kept as printed, flagged):**
-* Italy `1539–49` overlaps the separate Italy `1544–45` entry and may be a typesetting error for `1539–40`. Treated as printed, the 1500–1800 total is 161 regional episodes; merging the overlap gives 160.
+* Italy `1539–49` overlaps the separate Italy `1544–45` entry and is almost certainly a typesetting error for `1539–40`: the Alfani & Ó Gráda (2018) replication data code Italian famine years as 1539–1540. `end_year` keeps the printed value; `end_year_corrected` and `famine_corrected` apply the fix (636 → 629 region-years). Treated as printed, the 1500–1800 total is 161 regional episodes; merging the overlap gives 160.
 * Table A2 (years with famine in ≥ 4 regions) lists 1556 (Table A1 gives only 3 regions that year) and omits 1629 and 1630 (Table A1 gives 4 regions each).
 * Comma-separated years in one cell (Russia/Ukraine `1279, 1282`; `1468, 1472`; `1674, 1677`) are split into separate episodes.
 
@@ -70,14 +71,24 @@ Selected corrections (all in `changelog_v0.2.csv`):
 * "Puma et al. (in press)" → **Puma, Chon & Wada (2015)**, *PAGES Magazine* 23(2), 66–67.
 * Book titles on the Chinese famine were swapped (*Tombstone* is Yang 2012; *Mao's Great Famine* is Dikötter 2010); Robock (2000) and Jordan (1996) citations reconciled; encoding errors in the reference list fixed; a stray text fragment removed from the 1813 Poland entry; assorted typos.
 
-Flagged for expert review, not changed (⚑ in the explorer): the Soviet famine of 1932–33 (beta excess mortality of 1.2 million is far below the literature range); Yemen (no formal IPC Famine classification); dates of the Ethiopian (1983–85), North Korean (1995–2000) and Henan (1942–43) famines; Kuwae attribution of the 1450s eruption; Agung VEI (4 vs 5); a duplicate 1586 England entry; two implausible Walford entries (1286–1308; 1594 text about the 1590 siege of Paris); and an unresolved Dando (1980/2012) citation.
+* **Soviet famine 1931–33:** beta excess mortality (1.2 million) replaced: at least 5 million famine deaths across the USSR in 1931–34, including ~3.9 million excess deaths in Ukraine (~13% of its population); published range 5.5–10.8 million (Ó Gráda 2009; Applebaum 2017; HURI MAPA; Markevich, Naumenko & Qian 2021).
+* **Yemen:** restated on the IPC scale. No area was classified in Famine; in Dec 2018–Jan 2019 ~63,500 people were in IPC Phase 5 (Catastrophe), 238,000 without humanitarian food assistance (IPC 2018).
+* **Dates:** Ethiopia 1983–85 (with the higher ~0.8 million estimate from the World Peace Foundation added); North Korea 1995–98; Henan 1942–43.
+* **1450s eruption:** no longer attributed to Kuwae. Ice cores show a Northern Hemisphere eruption in 1452/53 and a Southern Hemisphere eruption in 1457/58, and the 1458/59 glass is chemically distinct from Kuwae (Sigl et al. 2015; Hartman et al. 2019; Abbott et al. 2021).
+* **Agung 1963:** VEI 5 (Smithsonian GVP).
+* **Walford entries:** the duplicate 1586 England row and the "twenty-three years' famine" of 1286–1308 were removed (both modern chronologies rule out a continuous famine, and Walford's individual dearth years in that span remain). Walford's 1594 quotation about the siege of Paris was moved to its own 1590 Paris entry; the 1594 England/Hungary famine stays.
+* Dando (2012) added to the reference list.
 
-**v0.2 additions:** Sudan 2024–present (IPC-confirmed Famine in Zamzam camp, El Fasher and Kadugli) and the Gaza Strip 2025 (IPC-confirmed Famine in Gaza Governorate).
+Still flagged: the source of the 536 CE eruption remains unidentified.
+
+**v0.2 additions:** Sudan 2024–present (IPC Famine Review Committee confirmed Famine in Zamzam camp, Aug 2024, and in El Fasher and Kadugli, Sep 2025 analysis) and the Gaza Strip 2025 (IPC FRC confirmed Famine in Gaza Governorate, Aug 2025).
+
+**Cross-check data:** the Alfani & Ó Gráda (2018) replication dataset (openICPSR, doi:10.3886/E120551V1; Italy, France and England famine indicators, 1290–1901) was used to check the Italy 1539–40 correction and the Walford 1286–1308 entry. It is not redistributed here.
 
 ## Known gaps (next steps)
 
 * Walford (1878) Table 1 entries for **1832–1878** have not yet been transcribed.
-* The original **Alfani & Ó Gráda database (1250–present)** is deposited at openICPSR (doi:10.3886/E120551V1) and would extend European coverage past 1800.
+* Alfani & Ó Gráda (2017) chapter-level regional chronologies (e.g., Table 8.1 Ireland, 9.1 Nordic) would add single-region 19th-century famines beyond Table 1.1.
 * Mortality figures are stored as text; numeric excess-mortality fields with low/high bounds would make the data easier to analyse.
 * Severity and extent are absent for most records; IPC phase classifications could be added for post-2004 crises.
 

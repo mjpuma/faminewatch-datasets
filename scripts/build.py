@@ -49,6 +49,15 @@ REFS = {
  "IPC_FRC_Gaza2025": "IPC Famine Review Committee (2025). Famine Review Committee: Gaza Strip, August 2025 — Conclusions and Recommendations. Integrated Food Security Phase Classification, 22 August 2025.",
  "IPC_Sudan2024": "IPC Famine Review Committee (2024). Sudan: Famine (IPC Phase 5) in Zamzam camp, North Darfur. Integrated Food Security Phase Classification, August 2024.",
  "IPC_Sudan2025": "IPC (2025). Sudan: IPC Acute Food Insecurity Analysis, September 2025 – May 2026 (issued 3 November 2025); FRC confirms Famine (IPC Phase 5) in El Fasher and Kadugli. https://reliefweb.int/report/sudan/sudan-ipc-acute-food-insecurity-analysis-september-2025-may-2026-issued-november-2025",
+ "Applebaum2017": "Applebaum, A. (2017). Red Famine: Stalin's War on Ukraine. Allen Lane (London) / Doubleday (New York).",
+ "HURI_Ukraine": "Harvard Ukrainian Research Institute MAPA project (Wolowyna et al.). Total direct famine losses in Ukraine by region, 1932–1934. https://www.gis.huri.harvard.edu/media-gallery/detail/1381000/1082125",
+ "IPC_Yemen2018": "IPC (2018). Yemen: Integrated Food Security Phase Classification Snapshot, December 2018 – January 2019. https://reliefweb.int/report/yemen/yemen-integrated-food-security-phase-classification-snapshot-december-2018-january-2019",
+ "Sigl2015": "Sigl, M., Winstrup, M., McConnell, J. R., et al. (2015). Timing and climate forcing of volcanic eruptions for the past 2,500 years. Nature, 523, 543–549. https://doi.org/10.1038/nature14565",
+ "Hartman2019": "Hartman, L. H., Kurbatov, A. V., Winski, D. A., et al. (2019). Volcanic glass properties from 1459 C.E. volcanic event in South Pole ice core dismiss Kuwae caldera as a potential source. Scientific Reports, 9. https://doi.org/10.1038/s41598-019-50939-x",
+ "Abbott2021": "Abbott, P. M., Plunkett, G., Corona, C., et al. (2021). Cryptotephra from the Icelandic Veiðivötn 1477 CE eruption in a Greenland ice core: confirming the dating of volcanic events in the 1450s CE and assessing the eruption's climatic impact. Climate of the Past, 17, 565–585. https://doi.org/10.5194/cp-17-565-2021",
+ "GVP_Agung": "Global Volcanism Program, Smithsonian Institution. Agung (Indonesia): eruption of 18 Feb 1963 – 27 Jan 1964, VEI 5. https://volcano.si.edu/volcano.cfm?vn=264020",
+ "WPF2024": "World Peace Foundation (2024). Historic Famines [synthesis table of famines with ≥100,000 deaths since 1870]. https://worldpeacefoundation.org/",
+ "AlfaniOGrada2017_T11": "Alfani, G., & Ó Gráda, C. (2017). Famines in Europe: An overview. In G. Alfani & C. Ó Gráda (Eds.), Famine in European History, Table 1.1 'Famines in Europe, 1250–1900'. Cambridge University Press.",
  "Esmaili_preprint": "Esmaili, E., Puma, M. J., Ludlow, F., Jobbová, E., Kumar, J., Holm, P., Ljungqvist, F. C., Matthews, J. A., Dahl, J. R., & Seim, A. El Niño amplified food insecurity in early modern Europe. Preprint, Research Square (2026). https://doi.org/10.21203/rs.3.rs-7812038/v1",
 }
 
@@ -73,6 +82,7 @@ EXTRA_BETA_REFS = [
  "WFP (2021). Yemen emergency. [full entry to be completed]",
  "Brooks, E. C. (1916). The Story of Corn and the Westward Migration. Rand McNally. [verify]",
  "Dow, A. (1768–1772). The History of Hindostan. [as cited]",
+ "Dando, W. A. (Ed.) (2012). Food and Famine in the 21st Century (2 vols.). ABC-CLIO. [cited as Dando (2012); distinct from Dando (1980) The Geography of Famine]",
  "Ludlow, F., Stine, A. R., Leahy, P., et al. (2013). Medieval Irish chronicles reveal persistent volcanic forcing of severe winter cold events, 431–1649 CE. Environmental Research Letters, 8, 024035.",
 ]
 
@@ -198,24 +208,16 @@ def flag(i, note): FLAG.setdefault(i, []).append(note)
 corr(3, "Excess mortality was 0.258 million (258,000; 95% range 244,000–273,000), Oct 2010–Apr 2012, per the FAO/FSNAU–FEWS NET study; beta value 0.285 was a digit transposition. Reference replaced (beta cited 'FAO (2013)').",
      impacts="Somalia (southern & central); excess mortality 0.258 million (244,000–273,000), Oct 2010–Apr 2012; ~4.6% of population, ~10% of children under five",
      refs="Checchi & Robinson (2013)", years="AD 2010-2012", start=2010)
-flag(2, "Yemen has had IPC Phase 5 (Catastrophe) populations, but the IPC has not formally classified area-level Famine; recommend rewording 'ongoing famine' to 'severe food crisis with IPC Phase 5 pockets' and adding the IPC source.")
-flag(8, "Excess-mortality estimates (Goodkind & West 2001) refer mainly to 1995–2000; consider start year 1995 rather than 1991.")
-flag(10, "The Ethiopian famine is usually dated 1983–85 (peak 1984–85); check years and the 0.5 million figure against Ó Gráda (2009), Table 1.1 (de Waal gives 0.4–0.6 million or more).")
-corr(19, "Note: Robock (2000) lists Agung 1963 as VEI 4; Smithsonian GVP lists VEI 5. Kept VEI 4 (as cited) and added the discrepancy.",
-     impacts="N/A (VEI 4 in Robock 2000; VEI 5 in Smithsonian GVP)")
 corr(20, "Fixed truncated 'ovt.' and swapped book titles: 'Tombstone' is Yang (2012); 'Mao's Great Famine' is Dikötter (2010).",
      cause='Govt. policy failure, "Great Leap Forward"', refs="Ó Gráda (2009); Dikötter (2010) Mao's Great Famine; Yang (2012) Tombstone")
-flag(22, "Henan famine is usually dated 1942–43; consider start year 1942.")
-flag(24, "Excess mortality of 1.2 million (0.7%) is far below the literature range for the 1932–33 Soviet famine (~5.5–10.8 million across the USSR; see Markevich, Naumenko & Qian 2021 and the Ellman/Wheatcroft references already cited). Probably a transcription error — please check against the source used.")
 corr(29, "Volcano name fixed (was 'Santa Maria (1902)').", cause="Santa María (Guatemala)")
 corr(33, "Tarawera eruption was 10 June 1886, not 1885.", start=1886, years="AD 1886", cause="Tarawera, Ōkataina caldera (New Zealand)")
 corr(49, "'Puma et al (in press)' published as Puma, Chon & Wada (2015), PAGES Magazine 23(2).",
      refs="Stothers (1999); Stommel & Stommel (1983); Oppenheimer (2003); McMichael (2012); Puma, Chon & Wada (2015)")
 corr(64, "Fixed citation 'Grattan(2006)'.", refs="Tanguy et al. (1998); Stothers (1999); Thordarson & Self (2003); Oman et al. (2006); Grattan (2006); Grove (2007); Trigo et al. (2010); D'Arrigo et al. (2011); Dando (2012)")
-flag(64, "Cites 'Dando (2012)' but the References sheet lists Dando (1980); reconcile (Dando, W. A. (Ed.) (2012) Food and Famine in the 21st Century, ABC-CLIO).")
+# Dando (2012) = edited volume; added to references below
 corr(106, "'Puma et al (in press)' → Puma, Chon & Wada (2015).", refs="Atwell (2001); Puma, Chon & Wada (2015)")
 corr(139, "'Puma et al (in press)' → Puma, Chon & Wada (2015).", refs="Atwell (2001); Ó Gráda (2009); Puma, Chon & Wada (2015)")
-flag(139, "Attribution of the mid-1450s sulfate signal to Kuwae is debated; revised ice-core chronologies place the largest event in 1458 (Sigl et al. 2015). Consider 'Unidentified eruption(s), 1453/1458 (formerly attributed to Kuwae)'.")
 corr(174, "Year range aligned to start year; 'Jordan WC (1996)' kept (Princeton 1996 is the first edition; References sheet year corrected from 1997).", years="AD 1315-1317")
 corr(194, "'Puma et al (in press)' → Puma, Chon & Wada (2015).", refs="Lavigne et al. (2013); Stothers (1999); Puma, Chon & Wada (2015)")
 corr(203, "'Puma et al (in press)' → Puma, Chon & Wada (2015).", refs="Atwell (2001); Ó Gráda (2009); Puma, Chon & Wada (2015)")
@@ -226,6 +228,31 @@ corr(379, "The 43 BCE climate shock is now attributed to the Okmok II eruption (
      cause="Okmok II (Alaska, USA); formerly attributed to Etna", start=-43, years="43-42 BC",
      impacts="Dry fog (started March for 9-10 months); First winter cold in Europe; Poor harvest and famine in the Mediterranean (43–42 BCE among the coldest years of recent millennia in the N. Hemisphere)",
      refs="Stothers (1999); McConnell et al. (2020)")
+
+# ---- v0.2 review fixes (requested 23 Nov 2026)
+corr(2, "Reworded to the IPC scale: the IPC classified ~63,500 people in Phase 5 (Catastrophe) in Dec 2018–Jan 2019 (238,000 without humanitarian food assistance), but no area was classified in Famine (Phase 5). Reference updated.",
+     impacts="Yemen; severe acute food insecurity, not a classified Famine: IPC Dec 2018–Jan 2019 found 15.9 million people (53%) in IPC Phase 3+ incl. ~5 million in Phase 4 (Emergency) and ~63,500 in Phase 5 (Catastrophe) despite humanitarian food assistance (238,000 in Phase 5 without it)",
+     refs="IPC (2018); WFP (2021)")
+corr(8, "Dates corrected to the famine proper (the 'Arduous March', 1995–98); mortality estimate refers to 1995–2000.",
+     start=1995, years="AD 1995-1998",
+     impacts="North Korean Famine ('Arduous March', 1995–1998); 30% of grain crops lost in 1995; excess mortality 0.6–1 million (3–4% death rate) over 1995–2000")
+corr(10, "Dates corrected: the Ethiopian famine was 1983–85 (peak 1984–85). Added the higher World Peace Foundation estimate.",
+     start=1983, years="AD 1983-1985",
+     impacts="Ethiopia (Wollo, Tigray and other areas), 1983–85; excess mortality 0.5 million (1% death rate) per Ó Gráda (2009); other estimates up to ~0.8 million (World Peace Foundation 2024)",
+     refs="Ó Gráda (2009); World Peace Foundation (2024)")
+corr(19, "Size corrected to VEI 5 per the Smithsonian Global Volcanism Program (Robock 2000 lists VEI 4).",
+     env="Volcanic eruption (VEI: 5)", refs="Robock (2000); Smithsonian GVP")
+corr(22, "Dates corrected: the Henan famine was 1942–43.",
+     start=1942, years="AD 1942-1943", impacts="China (Henan province), 1942–43; possibly 2–3 million deaths")
+corr(24, "Excess mortality replaced: beta value (1.2 million, 0.7%) was far below the literature. Now: at least 5 million famine deaths across the USSR in 1931–34, incl. ~3.9 million excess deaths in Ukraine (~13% of its population); published range 5.5–10.8 million. References added.",
+     impacts="Soviet famine of 1931–33 (in Ukraine, the Holodomor of 1932–33); affected Ukraine, Northern Caucasus, Volga Region, Kazakhstan, the South Urals and West Siberia; at least 5 million famine deaths across the USSR in 1931–34 (Applebaum 2017), including ~3.9 million excess deaths in Ukraine, ~13% of its 1933 population (HURI MAPA); published estimates range 5.5–10.8 million (Markevich, Naumenko & Qian 2021)",
+     cause="Govt. policy (forced collectivization, grain requisitions, blacklisting, movement restrictions); poor 1931–32 harvests",
+     refs="Ó Gráda (2009); Applebaum (2017); HURI MAPA; Markevich, Naumenko & Qian (2021); Conquest (1987, 2001); Ellman (2005, 2007); Tauger (1991, 2001); Wheatcroft et al. (2004)")
+corr(139, "Volcanic attribution corrected: ice-core work shows two 1450s events, a Northern Hemisphere eruption in 1452/early 1453 and a Southern Hemisphere eruption in 1457/58, and glass shards from the 1458/59 layer are chemically distinct from Kuwae, so Kuwae is no longer accepted as the source.",
+     cause="Unidentified eruptions: N. Hemisphere 1452/early 1453 and S. Hemisphere 1457/58 (formerly attributed to Kuwae, Vanuatu)",
+     start=1453, years="AD 1453-1458",
+     refs="Atwell (2001); Ó Gráda (2009); Puma, Chon & Wada (2015); Sigl et al. (2015); Hartman et al. (2019); Abbott et al. (2021)")
+
 flag(335, "Source of the 536 CE event remains unidentified (candidate high-latitude N. Hemisphere eruption; a second major eruption in 539/540).")
 
 def find_rows(df, start, contains):
@@ -242,14 +269,16 @@ for i in find_rows(df, 1813, "Poland"):
          impacts='Famine in Poland: "Suffered from famine, consequent upon an inundation; also Drontheim (Norway), in consequence of the intercepting of supplies by Sweden; 5,000 perished."', cause="Floods", env="Floods")
 for i in find_rows(df, 1598, "Pegu"):
     corr(i, "Typo 'Gamine Pegu'.", impacts='Famine in Pegu: "Very severe."')
+REMOVE = {}
 for i in find_rows(df, 1594, "siege of Paris"):
-    flag(i, "Quoted text describes the siege of Paris by Henry IV (1590), not England/Hungary in 1594; check Walford (1878) Table 1 placement.")
+    corr(i, "Walford's quotation under this year describes the siege of Paris by Henry IV, which took place in 1590, not 1594; the quotation was moved to a separate 1590 Paris entry. The 1594 England famine itself is consistent with Alfani & Ó Gráda (England famine 1594–98).",
+         impacts="Famine in England and Hungary")
 for i in find_rows(df, 1286, "twenty-three years"):
-    flag(i, "A 23-year famine (1286–1308) reported by Short (via Walford) is not credible as a single event; treat as a period of recurrent dearth.")
+    REMOVE[i] = "Removed: Walford (citing Short) describes 'a twenty-three years' famine' starting in 1286. A continuous 1286–1308 famine is ruled out by both modern chronologies (Britain: famine only in 1295–96 in Ljungqvist et al. 2024; England: no famine years 1290–1314 in the Alfani & Ó Gráda 2018 data), and the individual dearth years Walford reports in this period (1289, 1294, 1295, 1298) remain as separate entries."
 dup = find_rows(df, 1586, "Famine in England")
 bare = [i for i in dup if str(df.at[i,"impacts"]).strip()=="Famine in England"]
 for i in bare:
-    flag(i, "Duplicate of the other 1586 England entry (Walford 1878); candidate for removal.")
+    REMOVE[i] = "Removed: duplicate of the other 1586 England entry (Walford 1878, Table 1), which carries the full text."
 for i in find_rows(df, 1831, "NEED TO ADD WALFORD"):
     corr(i, "Removed internal to-do note from the description (gap logged in README: Walford Table 1 entries 1832–1878 not yet transcribed).",
          impacts='Famine in Ireland: "Famine; Parliament granted 40,000l. for relief; 74,410l. subscriptions in England."')
@@ -265,8 +294,12 @@ for i in df.index:
 rows = []
 log = []
 today = "2026-11-23"
+removed_log = []
 for i in df.index:
     r = df.loc[i].to_dict()
+    if i in REMOVE:
+        removed_log.append(dict(row=i, start=int(r["start"]), years=str(r["years"]), impacts=str(r["impacts"]), note=REMOVE[i]))
+        continue
     for kw, note in CORR.get(i, []):
         for k, v in kw.items():
             old = r[k]; r[k] = v
@@ -327,6 +360,11 @@ NEW = [
       references="IPC FRC (2025)", verification_status="added in v0.2 (source-checked)",
       qc_notes="New entry. First IPC-confirmed Famine in the Middle East region."),
 ]
+NEW.append(dict(start_year=1590, end_year=1590, year_label="AD 1590", area="Paris", macro_region="Europe",
+      event_type="Famine / food crisis", primary_cause="War (siege of Paris by Henry IV)", environmental_category="Minor/no env.",
+      description='Famine in Paris during the siege by Henry IV: "During the siege of Paris by Henry IV this year, owing to famine, bread which had been sold, while any remained, for a crown a-pound, was at last made from the bones of the charnel-house of the Holy Innocents.-Hinault." (Walford prints this under 1594; the siege was in 1590.)',
+      references="Walford (1878), Table 1", verification_status="corrected in v0.2",
+      qc_notes="Split from Walford's 1594 England/Hungary entry and re-dated to 1590, the year of the siege."))
 for n in NEW:
     n.update(source_dataset="Puma & Chon compilation — v0.2 additions", severity_info=None, _row=None)
     rows.append(n)
@@ -370,25 +408,28 @@ for d in eps:
     d["episode_id"] = f"LJ24-{REGION_ID[d['region']]}-{d['start_year']}"
     d["n_years"] = d["end_year"] - d["start_year"] + 1
     note = None
+    d["end_year_corrected"] = d["end_year"]
     if d["region"]=="Italy" and d["as_printed"]=="1539–49":
-        note = "As printed in Table A1. Overlaps the separate Italy 1544–45 entry; possibly a typesetting error for 1539–40 — check against Alfani et al. (2017)."
+        d["end_year_corrected"] = 1540
+        note = "Printed as 1539–49 in Table A1, overlapping the separate Italy 1544–45 entry. Almost certainly a typesetting error for 1539–40: the Alfani & Ó Gráda (2018) replication data code Italy famine years as 1539–1540. end_year keeps the printed value; end_year_corrected = 1540."
     if d["region"]=="Russia/Ukraine" and d["start_year"] in (1279,1282,1468,1472,1674,1677):
         note = "Printed as a comma-separated list in one cell; split into separate single-year episodes here."
     d["note"] = note
     d["regional_sources"] = REGION_SRC[d["region"]]
     d["citation"] = "Ljungqvist, Seim & Collet (2024), WIREs Climate Change 15(1):e859, Table A1 (revised from Alfani & Ó Gráda 2017, 2018)"
-ep_df = pd.DataFrame(eps)[["episode_id","region","start_year","end_year","n_years","as_printed","regional_sources","note","table_page","citation"]]
+ep_df = pd.DataFrame(eps)[["episode_id","region","start_year","end_year","end_year_corrected","n_years","as_printed","regional_sources","note","table_page","citation"]]
 
 # region-year long table (presence/absence), 1250-1800
 ry = []
 for reg in REGION_ORDER:
-    yrs = {}
+    yrs = {}; yrc = set()
     for d in eps:
         if d["region"]==reg:
             for yy in range(d["start_year"], d["end_year"]+1):
                 yrs.setdefault(yy, []).append(d["episode_id"])
+            yrc.update(range(d["start_year"], d["end_year_corrected"]+1))
     for yy in range(1250, 1801):
-        ry.append(dict(region=reg, year=yy, famine=int(yy in yrs), episode_ids=";".join(yrs.get(yy, [])) or None))
+        ry.append(dict(region=reg, year=yy, famine=int(yy in yrs), famine_corrected=int(yy in yrc), episode_ids=";".join(yrs.get(yy, [])) or None))
 ry_df = pd.DataFrame(ry)
 wide = ry_df.pivot(index="year", columns="region", values="famine")[REGION_ORDER].reset_index()
 
@@ -403,6 +444,23 @@ for d in eps:
         severity_info=None, verification_status="transcribed from published table (v0.2)",
         qc_notes=d["note"], _row=None, episode_id=d["episode_id"]))
 
+AOG_1800s = [("Spain","1803–04"),("Germany/Switzerland/Austria","1805"),
+             ("Italy","1817"),("Germany/Switzerland/Austria","1815–17"),("Low Countries","1816–17"),("Ireland","1816–18"),
+             ("Germany/Switzerland/Austria","1845–48"),("Low Countries","1845–50"),("Ireland","1845–52"),
+             ("Nordic Europe","1866–68"),("Russia/Ukraine","1866–68")]
+aog_rows = []
+for reg, txt in AOG_1800s:
+    a, e, _ = parse_cell(txt)[0]
+    rid = "AOG17-" + re.sub(r"[^A-Z]", "", reg.upper())[:3] + f"-{a}"
+    aog_rows.append(dict(episode_id=rid, region=reg, start_year=a, end_year=e, as_printed=txt,
+                         citation="Alfani & Ó Gráda (2017), Famine in European History, Table 1.1 'Famines in Europe, 1250–1900'"))
+    rows.append(dict(source_dataset="Alfani & Ó Gráda (2017) Table 1.1, 1800–1900",
+        start_year=a, end_year=e, year_label=txt, area=reg, macro_region="Europe", event_type="Famine (regional famine years)",
+        primary_cause=None, environmental_category=None,
+        description=f"Famine years recorded for {reg} ({txt}) in Table 1.1 of Alfani & Ó Gráda (2017). Table 1.1 lists only the major famines reported in at least two European regions, so single-region 19th-century famines are not included here.",
+        references="Alfani & Ó Gráda (2017), Table 1.1", severity_info=None,
+        verification_status="transcribed from published table (v0.2)", qc_notes=None, _row=None, episode_id=rid))
+pd.DataFrame(aog_rows).to_csv(os.path.join(OUT, "europe_famine_episodes_1800-1900_AlfaniOGrada2017_Table1-1.csv"), index=False)
 ev = pd.DataFrame(rows)
 ev = ev.sort_values(["start_year","source_dataset","area"], ascending=[False, True, True]).reset_index(drop=True)
 ids = []
@@ -445,6 +503,8 @@ for c in EXTRA_BETA_REFS:
     refs_out.append(dict(key="", citation=c, group="beta in-text citations missing from reference list (added)"))
 refs_df = pd.DataFrame(refs_out)
 
+for rr in removed_log:
+    log.append(dict(event_id="(removed)", row=rr["row"], field="(row removed)", old=f'{rr["years"]}: {rr["impacts"]}', new="", note=rr["note"], date=today))
 log_df = pd.DataFrame(log)[["event_id","field","old","new","note","date"]]
 
 # ---------------------------------------------------------------- write
