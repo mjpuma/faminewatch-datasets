@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FamineWatch Datasets — Famine Explorer (v0.2)</title>
+<style>
+.viz-root{
+  color-scheme: light;
+  --surface-0:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#f0efec;
+  --border:#dedcd5; --grid:#e8e6e0;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#76756f;
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a;
+  --seq-100:#cde2fb; --seq-250:#86b6ef; --seq-450:#2a78d6; --seq-600:#184f95;
+  --band:#fff3d6; --warn:#fab219; --accent-ink:#1c5cab;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])) .viz-root{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#252523;
+    --border:#3a3a37; --grid:#2c2c2a;
+    --text-primary:#f0efec; --text-secondary:#c3c2b7; --text-muted:#9a998f;
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+    --seq-100:#104281; --seq-250:#1c5cab; --seq-450:#3987e5; --seq-600:#86b6ef;
+    --band:#3a3320; --warn:#fab219; --accent-ink:#86b6ef;
+  }
+}
+:root[data-theme="dark"] .viz-root{
+    color-scheme: dark;
+    --surface-0:#121211; --surface-1:#1a1a19; --surface-2:#252523;
+    --border:#3a3a37; --grid:#2c2c2a;
+    --text-primary:#f0efec; --text-secondary:#c3c2b7; --text-muted:#9a998f;
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+    --seq-100:#104281; --seq-250:#1c5cab; --seq-450:#3987e5; --seq-600:#86b6ef;
+    --band:#3a3320; --warn:#fab219; --accent-ink:#86b6ef;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
+.viz-root{background:var(--surface-0);color:var(--text-primary);min-height:100vh}
+header{padding:22px 28px 8px;max-width:1280px;margin:0 auto}
+h1{font-size:22px;margin:0 0 4px;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--text-secondary);margin:0;max-width:900px}
+.kpis{display:flex;gap:28px;flex-wrap:wrap;margin:16px 0 4px}
+.kpi .v{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
+.kpi .l{color:var(--text-muted);font-size:12px}
+nav{max-width:1280px;margin:0 auto;padding:0 28px;display:flex;gap:4px;border-bottom:1px solid var(--border)}
+nav button{background:none;border:0;padding:10px 14px;font:inherit;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+nav button[aria-selected="true"]{color:var(--text-primary);border-bottom-color:var(--series-1);font-weight:600}
+main{max-width:1280px;margin:0 auto;padding:18px 28px 60px}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:15px;margin:0 0 2px;font-weight:620}
+.card .note{color:var(--text-secondary);font-size:13px;margin:0 0 12px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.controls label{font-size:12px;color:var(--text-secondary);display:flex;gap:6px;align-items:center}
+select,input[type=search],input[type=number]{font:inherit;font-size:13px;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:5px 8px}
+input[type=number]{width:84px}
+input[type=search]{min-width:220px}
+.chip{font:inherit;font-size:12px;border:1px solid var(--border);background:var(--surface-1);color:var(--text-secondary);border-radius:999px;padding:4px 10px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--series-1);color:var(--text-primary);background:var(--surface-2)}
+.btn{font:inherit;font-size:12px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-primary);border-radius:6px;padding:5px 10px;cursor:pointer;text-decoration:none}
+svg text{fill:var(--text-secondary);font-size:11px}
+.axis line,.axis path{stroke:var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-secondary);margin:4px 0 8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+#tip{position:fixed;pointer-events:none;z-index:10;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;max-width:340px;box-shadow:0 4px 18px rgba(0,0,0,.14);display:none}
+#tip b{font-weight:620}#tip .m{color:var(--text-muted)}
+.detail{border-left:3px solid var(--series-1);padding:10px 14px;background:var(--surface-2);border-radius:0 8px 8px 0;font-size:13px}
+.detail h3{margin:0 0 6px;font-size:14px}
+.detail dl{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;margin:0}
+.detail dt{color:var(--text-muted)}.detail dd{margin:0}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{color:var(--text-secondary);font-weight:600;position:sticky;top:0;background:var(--surface-1);cursor:pointer;white-space:nowrap}
+tbody tr{cursor:pointer}tbody tr:hover{background:var(--surface-2)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.srcdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.badge{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--border);color:var(--text-secondary);white-space:nowrap}
+.badge.flag{border-color:var(--warn)}
+.badge.flag::before{content:"⚑ ";color:var(--warn)}
+.tablewrap{max-height:620px;overflow:auto;border:1px solid var(--grid);border-radius:8px}
+.pager{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;color:var(--text-secondary)}
+.cite{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:var(--surface-2);padding:10px 12px;border-radius:8px;white-space:pre-wrap}
+ol.refs li{margin-bottom:6px;font-size:13px}
+a{color:var(--accent-ink)}
+.small{font-size:12px;color:var(--text-muted)}
+.toggle{position:absolute;top:18px;right:24px}
+@media (max-width:700px){header,main,nav{padding-left:14px;padding-right:14px}.detail dl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="viz-root" id="root">
+<header style="position:relative">
+  <button class="btn toggle" id="themeBtn" title="Toggle light/dark">Light / dark</button>
+  <h1>FamineWatch Datasets — Famine Explorer</h1>
+  <p class="sub">A compilation of documented famines and food-system disruptions, plus the regional famine-year chronology for medieval and early modern Europe (1250–1800) of Ljungqvist, Seim &amp; Collet (2024). Version 0.2 (beta) · Center for Climate Systems Research, Columbia Climate School.</p>
+  <div class="kpis" id="kpis"></div>
+</header>
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-tab="eu">Europe 1250–1800</button>
+  <button role="tab" aria-selected="false" data-tab="tl">Global timeline</button>
+  <button role="tab" aria-selected="false" data-tab="tb">Browse &amp; download</button>
+  <button role="tab" aria-selected="false" data-tab="src">Sources &amp; changes</button>
+</nav>
+<main>
+<section class="panel on" id="p-eu">
+  <div class="card">
+    <h2>Famine years by European region, 1250–1800</h2>
+    <p class="note">Each filled cell is a year in which famine conditions were recorded in that region (Ljungqvist et al. 2024, Table A1, revised from Alfani &amp; Ó Gráda 2017, 2018). Presence only — the chronology records neither severity nor geographic extent within a region. Hover a cell for the episode; click to see its sources.</p>
+    <div class="controls">
+      <span class="small">Period</span>
+      <button class="chip" aria-pressed="true" data-range="1250,1800">1250–1800</button>
+      <button class="chip" aria-pressed="false" data-range="1500,1800">1500–1800</button>
+      <button class="chip" aria-pressed="false" data-range="1250,1500">1250–1500</button>
+      <label>from <input type="number" id="euFrom" value="1250" min="1250" max="1800"></label>
+      <label>to <input type="number" id="euTo" value="1800" min="1250" max="1800"></label>
+      <label><input type="checkbox" id="euBand" checked> shade years with famine in ≥4 regions</label>
+    </div>
+    <div id="euChart"></div>
+    <div class="legend"><span><i style="background:var(--series-1)"></i>Famine year recorded</span><span><i style="background:var(--band);border:1px solid var(--border)"></i>Famine in ≥4 of 9 regions</span><span class="small">Top strip: number of regions with famine that year</span></div>
+    <div id="euDetail" class="detail" style="display:none"></div>
+  </div>
+  <div class="card">
+    <h2>Episodes per region</h2>
+    <p class="note" id="euCountNote"></p>
+    <div id="euBars"></div>
+  </div>
+</section>
+
+<section class="panel" id="p-tl">
+  <div class="card">
+    <h2>All events by start year and region</h2>
+    <p class="note">One dot per event, coloured by source. Historical entries before 1832 are largely from Walford (1878) and are reports, not verified famines. Hover for a summary; click for the full record.</p>
+    <div class="controls">
+      <span class="small">Period</span>
+      <button class="chip" aria-pressed="false" data-tl="-2200,2026">All years</button>
+      <button class="chip" aria-pressed="true" data-tl="500,2026">500–2026</button>
+      <button class="chip" aria-pressed="false" data-tl="1250,1800">1250–1800</button>
+      <button class="chip" aria-pressed="false" data-tl="1800,2026">1800–2026</button>
+      <label>Type <select id="tlType"><option value="">All types</option></select></label>
+    </div>
+    <div class="legend" id="tlLegend"></div>
+    <div id="tlChart"></div>
+    <div id="tlDetail" class="detail" style="display:none"></div>
+  </div>
+</section>
+
+<section class="panel" id="p-tb">
+  <div class="card">
+    <h2>Browse the records</h2>
+    <p class="note">Filter, sort and download. Downloads include only the rows that match your filters. Full files are in the repository's <code>data/</code> folder.</p>
+    <div class="controls">
+      <input type="search" id="q" placeholder="Search place, cause, description, reference…">
+      <select id="fSrc"><option value="">All sources</option></select>
+      <select id="fReg"><option value="">All regions</option></select>
+      <select id="fType"><option value="">All event types</option></select>
+      <select id="fStat"><option value="">Any verification status</option></select>
+      <label>from <input type="number" id="fFrom" value="-2200"></label>
+      <label>to <input type="number" id="fTo" value="2026"></label>
+      <button class="btn" id="dl">Download CSV</button>
+      <button class="btn" id="dlj">Download JSON</button>
+    </div>
+    <div class="small" id="count"></div>
+    <div class="tablewrap"><table><thead><tr>
+      <th data-k="start_year">Start ↕</th><th data-k="end_year">End</th><th data-k="area">Area</th><th data-k="macro_region">Region</th>
+      <th data-k="event_type">Type</th><th>Description</th><th data-k="verification_status">Status</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    <div class="pager"><button class="btn" id="prev">‹ Prev</button><span id="pg"></span><button class="btn" id="next">Next ›</button></div>
+    <div id="tbDetail" class="detail" style="display:none;margin-top:12px"></div>
+  </div>
+</section>
+
+<section class="panel" id="p-src">
+  <div class="card">
+    <h2>How to cite</h2>
+    <div class="cite" id="citeBox"></div>
+  </div>
+  <div class="card">
+    <h2>European chronology: regional sources</h2>
+    <p class="note">From the note to Table A1 in Ljungqvist et al. (2024). Cite these when using a region's famine years.</p>
+    <table id="regSrc"><thead><tr><th>Region</th><th>Sources used to revise Alfani &amp; Ó Gráda (2017, 2018)</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="card">
+    <h2>Changes and review flags in v0.2</h2>
+    <p class="note">Corrections applied to the beta compilation, and items flagged for expert review (⚑).</p>
+    <div class="tablewrap" style="max-height:420px"><table><thead><tr><th>Event</th><th>Field</th><th>Note</th></tr></thead><tbody id="chg"></tbody></table></div>
+  </div>
+  <div class="card">
+    <h2>References</h2>
+    <ol class="refs" id="refs"></ol>
+  </div>
+</section>
+</main>
+<div id="tip" role="tooltip"></div>
+</div>
+<script>
+const DATA = /*__DATA__*/null;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a={}, p) => { const e=document.createElementNS(NS,t); for(const k in a) e.setAttribute(k,a[k]); if(p) p.appendChild(e); return e; };
+const esc = s => s==null ? "" : String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const yr = y => y<0 ? `${-y} BCE` : `${y}`;
+const EV = DATA.events, EP = DATA.europe.episodes, REG = DATA.europe.regions;
+const SRC = ["Puma & Chon (2025) beta compilation","Ljungqvist et al. (2024) Table A1","Puma & Chon compilation — v0.2 additions"];
+const SRCLAB = {[SRC[0]]:"Puma & Chon compilation (beta)",[SRC[1]]:"Ljungqvist et al. (2024), Table A1",[SRC[2]]:"v0.2 additions (2024–25 IPC)"};
+const SRCVAR = {[SRC[0]]:"var(--series-1)",[SRC[1]]:"var(--series-2)",[SRC[2]]:"var(--series-3)"};
+
+// theme toggle
+$("#themeBtn").onclick = () => { const r=document.documentElement; const dark = getComputedStyle($("#root")).colorScheme==="dark"; r.setAttribute("data-theme", dark?"light":"dark"); drawAll(); };
+
+// tooltip
+const tip = $("#tip");
+function showTip(html, ev){ tip.innerHTML=html; tip.style.display="block"; const w=tip.offsetWidth, h=tip.offsetHeight; let x=ev.clientX+14, y=ev.clientY+14; if(x+w>innerWidth-8) x=ev.clientX-w-14; if(y+h>innerHeight-8) y=ev.clientY-h-14; tip.style.left=x+"px"; tip.style.top=y+"px"; }
+function hideTip(){ tip.style.display="none"; }
+
+// KPIs
+(function(){
+  const n=EV.length, nEU=EP.length, ry=EP.reduce((a,d)=>a+d.n_years,0);
+  const flagged=EV.filter(e=>/flag/i.test(e.verification_status||"")).length;
+  const k=[[n,"records in total"],[nEU,"European regional famine episodes (1250–1800)"],[EV.filter(e=>e.source_dataset===SRC[0]).length,"compilation records (beta)"],[flagged,"records flagged for review"]];
+  $("#kpis").innerHTML = k.map(([v,l])=>`<div class="kpi"><div class="v">${v.toLocaleString()}</div><div class="l">${l}</div></div>`).join("");
+})();
+
+// tabs
+$$("nav button").forEach(b=>b.onclick=()=>{ $$("nav button").forEach(x=>x.setAttribute("aria-selected",x===b)); $$(".panel").forEach(p=>p.classList.toggle("on", p.id==="p-"+b.dataset.tab)); drawAll(); });
+
+// ---------------- Europe heatmap
+const yearMap = {}; // region|year -> episode
+EP.forEach(d=>{ for(let y=d.start_year;y<=d.end_year;y++){ (yearMap[d.region+"|"+y] ||= []).push(d); } });
+const countByYear = {}; for(let y=1250;y<=1800;y++){ countByYear[y]=REG.filter(r=>yearMap[r+"|"+y]).length; }
+let euRange=[1250,1800];
+function epDetail(d){
+  return `<h3>${esc(d.region)} · ${esc(d.as_printed)}</h3><dl>
+  <dt>Episode ID</dt><dd>${esc(d.episode_id)}</dd>
+  <dt>Years</dt><dd>${d.start_year}–${d.end_year} (${d.n_years} yr)</dd>
+  <dt>Chronology</dt><dd>${esc(d.citation)}</dd>
+  <dt>Regional sources</dt><dd>${esc(d.regional_sources)}</dd>
+  ${d.note?`<dt>Note</dt><dd>${esc(d.note)}</dd>`:""}
+  <dt>Other regions same years</dt><dd>${esc(REG.filter(r=>r!==d.region && [...Array(d.n_years).keys()].some(k=>yearMap[r+"|"+(d.start_year+k)])).join(", ")||"none")}</dd></dl>`;
+}
+function drawEU(){
+  const host=$("#euChart"); host.innerHTML="";
+  const W=Math.max(640, host.clientWidth||1000), lab=112, padR=12, top=8, stripH=46, gap=14, rowH=24, rows=REG.length;
+  const H=top+stripH+gap+rows*rowH+28;
+  const [a,b]=euRange, n=b-a+1, cw=(W-lab-padR)/n;
+  const x=y=>lab+(y-a)*cw;
+  const svg=el("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Heatmap of famine years by European region"},host);
+  // bands
+  if($("#euBand").checked){ for(let y=a;y<=b;y++) if(countByYear[y]>=4) el("rect",{x:x(y),y:top,width:Math.max(cw,1),height:stripH+gap+rows*rowH,fill:"var(--band)"},svg); }
+  // strip: step area of count
+  const sy=v=>top+stripH-(v/9)*stripH;
+  let d=`M${x(a)},${sy(0)}`; for(let y=a;y<=b;y++){ d+=`L${x(y)},${sy(countByYear[y])}L${x(y)+cw},${sy(countByYear[y])}`; } d+=`L${x(b)+cw},${sy(0)}Z`;
+  el("path",{d,fill:"var(--seq-250)",stroke:"var(--seq-450)","stroke-width":1.5,"stroke-linejoin":"round"},svg);
+  el("line",{x1:lab,x2:W-padR,y1:sy(0),y2:sy(0),stroke:"var(--border)"},svg);
+  [0,9].forEach(v=>{ const t=el("text",{x:lab-6,y:sy(v)+4,"text-anchor":"end"},svg); t.textContent=v; });
+  const tl=el("text",{x:4,y:top+stripH/2-2},svg); tl.textContent="Regions";
+  const tl2=el("text",{x:4,y:top+stripH/2+11},svg); tl2.textContent="in famine";
+  // rows
+  const y0=top+stripH+gap;
+  REG.forEach((r,i)=>{
+    const ry=y0+i*rowH;
+    el("rect",{x:lab,y:ry+2,width:W-lab-padR,height:rowH-4,fill:"var(--surface-2)",rx:3},svg);
+    const t=el("text",{x:lab-8,y:ry+rowH/2+4,"text-anchor":"end"},svg); t.textContent=r; t.style.fill="var(--text-primary)";
+  });
+  EP.forEach(dd=>{
+    const s=Math.max(dd.start_year,a), e=Math.min(dd.end_year,b); if(s>e) return;
+    const i=REG.indexOf(dd.region), ry=y0+i*rowH;
+    const rect=el("rect",{x:x(s),y:ry+3,width:Math.max((e-s+1)*cw-(cw>4?1:0),1.5),height:rowH-6,rx:Math.min(3,cw/2),fill:"var(--series-1)"},svg);
+    rect.style.cursor="pointer";
+    rect.addEventListener("mousemove",ev=>showTip(`<b>${esc(dd.region)} · ${esc(dd.as_printed)}</b><br>${dd.n_years} famine year${dd.n_years>1?"s":""}<br><span class="m">Sources: ${esc(dd.regional_sources)}</span>${dd.note?`<br><span class="m">⚑ ${esc(dd.note)}</span>`:""}`,ev));
+    rect.addEventListener("mouseleave",hideTip);
+    rect.addEventListener("click",()=>{ const box=$("#euDetail"); box.innerHTML=epDetail(dd); box.style.display="block"; });
+  });
+  // year crosshair on strip
+  const hit=el("rect",{x:lab,y:top,width:W-lab-padR,height:stripH,fill:"transparent"},svg);
+  const ch=el("line",{y1:top,y2:y0+rows*rowH,stroke:"var(--text-muted)","stroke-dasharray":"2 3",opacity:0},svg);
+  hit.addEventListener("mousemove",ev=>{ const bb=svg.getBoundingClientRect(); const px=(ev.clientX-bb.left)*(W/bb.width); const y=Math.min(b,Math.max(a,Math.floor(a+(px-lab)/cw))); ch.setAttribute("x1",x(y)+cw/2); ch.setAttribute("x2",x(y)+cw/2); ch.setAttribute("opacity",1);
+    const rs=REG.filter(r=>yearMap[r+"|"+y]); showTip(`<b>${y}</b> — ${rs.length} region${rs.length===1?"":"s"} in famine${rs.length?`<br><span class="m">${esc(rs.join(", "))}</span>`:""}`,ev); });
+  hit.addEventListener("mouseleave",()=>{ch.setAttribute("opacity",0);hideTip();});
+  // x axis
+  const step = n>300?50:(n>120?25:10);
+  for(let y=Math.ceil(a/step)*step;y<=b;y+=step){ el("line",{x1:x(y),x2:x(y),y1:y0+rows*rowH,y2:y0+rows*rowH+4,stroke:"var(--border)"},svg); const t=el("text",{x:x(y),y:y0+rows*rowH+16,"text-anchor":"middle"},svg); t.textContent=y; }
+}
+function drawEUBars(){
+  const host=$("#euBars"); host.innerHTML="";
+  const [a,b]=euRange;
+  const cnt=REG.map(r=>({r, n:EP.filter(d=>d.region===r && d.end_year>=a && d.start_year<=b).length, y:[...Array(b-a+1).keys()].filter(k=>yearMap[r+"|"+(a+k)]).length}));
+  $("#euCountNote").textContent=`Number of famine episodes (and famine years) per region, ${a}–${b}. Episodes are the periods as printed in Table A1.`;
+  const W=Math.max(520,host.clientWidth||800), lab=112, rowH=26, H=cnt.length*rowH+8, max=Math.max(...cnt.map(c=>c.n));
+  const svg=el("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Episodes per region"},host);
+  cnt.forEach((c,i)=>{ const y=4+i*rowH; const t=el("text",{x:lab-8,y:y+rowH/2+3,"text-anchor":"end"},svg); t.textContent=c.r; t.style.fill="var(--text-primary)";
+    const w=(W-lab-140)*c.n/max; const r=el("rect",{x:lab,y:y+5,width:Math.max(w,2),height:rowH-10,rx:4,fill:"var(--series-1)"},svg);
+    r.addEventListener("mousemove",ev=>showTip(`<b>${esc(c.r)}</b><br>${c.n} episodes · ${c.y} famine years (${a}–${b})`,ev)); r.addEventListener("mouseleave",hideTip);
+    const v=el("text",{x:lab+w+6,y:y+rowH/2+3},svg); v.textContent=`${c.n} episodes · ${c.y} yrs`; });
+}
+$$("[data-range]").forEach(b=>b.onclick=()=>{ $$("[data-range]").forEach(x=>x.setAttribute("aria-pressed",x===b)); euRange=b.dataset.range.split(",").map(Number); $("#euFrom").value=euRange[0]; $("#euTo").value=euRange[1]; drawEU(); drawEUBars(); });
+["#euFrom","#euTo"].forEach(s=>$(s).onchange=()=>{ let a=+$("#euFrom").value,b=+$("#euTo").value; a=Math.max(1250,Math.min(a,1800)); b=Math.max(a,Math.min(b,1800)); euRange=[a,b]; $$("[data-range]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.range===a+","+b)); drawEU(); drawEUBars(); });
+$("#euBand").onchange=drawEU;
+
+// ---------------- Global timeline
+let tlRange=[500,2026];
+const MACROS=[...new Set(EV.map(e=>e.macro_region))].sort((a,b)=>EV.filter(e=>e.macro_region===b).length-EV.filter(e=>e.macro_region===a).length);
+const TYPES=[...new Set(EV.map(e=>e.event_type))].sort();
+TYPES.forEach(t=>$("#tlType").insertAdjacentHTML("beforeend",`<option>${esc(t)}</option>`));
+$("#tlLegend").innerHTML=SRC.map(s=>`<span><i style="background:${SRCVAR[s]};border-radius:50%"></i>${esc(SRCLAB[s])} (${EV.filter(e=>e.source_dataset===s).length})</span>`).join("");
+function evDetail(e){
+  return `<h3>${esc(e.area||"—")} · ${esc(e.year_label)}</h3><dl>
+  <dt>Event ID</dt><dd>${esc(e.event_id)}</dd>
+  <dt>Source dataset</dt><dd>${esc(SRCLAB[e.source_dataset]||e.source_dataset)}</dd>
+  <dt>Years</dt><dd>${yr(e.start_year)}${e.end_year!==e.start_year?"–"+yr(e.end_year):""}</dd>
+  <dt>Region</dt><dd>${esc(e.macro_region)}</dd>
+  <dt>Type</dt><dd>${esc(e.event_type)}</dd>
+  ${e.primary_cause?`<dt>Primary cause</dt><dd>${esc(e.primary_cause)}</dd>`:""}
+  ${e.environmental_category?`<dt>Environmental category</dt><dd>${esc(e.environmental_category)}</dd>`:""}
+  <dt>Description</dt><dd>${esc(e.description||"—")}</dd>
+  <dt>References</dt><dd>${esc(e.references)}</dd>
+  <dt>Verification</dt><dd>${esc(e.verification_status)}</dd>
+  ${e.qc_notes?`<dt>QC notes</dt><dd>${esc(e.qc_notes)}</dd>`:""}</dl>`;
+}
+function drawTL(){
+  const host=$("#tlChart"); host.innerHTML="";
+  const ty=$("#tlType").value;
+  const ev=EV.filter(e=>(!ty||e.event_type===ty) && e.start_year>=tlRange[0] && e.start_year<=tlRange[1]);
+  const W=Math.max(640,host.clientWidth||1000), lab=170, padR=14, rowH=34, top=6, H=top+MACROS.length*rowH+30;
+  const [a,b]=tlRange, x=y=>lab+(y-a)/(b-a)*(W-lab-padR);
+  const svg=el("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Timeline of events by region"},host);
+  MACROS.forEach((m,i)=>{ const y=top+i*rowH; el("line",{x1:lab,x2:W-padR,y1:y+rowH/2,y2:y+rowH/2,stroke:"var(--grid)"},svg); const t=el("text",{x:lab-8,y:y+rowH/2+4,"text-anchor":"end"},svg); t.textContent=m; t.style.fill="var(--text-primary)"; });
+  // deterministic vertical jitter by source
+  const off={[SRC[0]]:-7,[SRC[1]]:0,[SRC[2]]:7};
+  ev.forEach(e=>{ const i=MACROS.indexOf(e.macro_region), cy=top+i*rowH+rowH/2+(off[e.source_dataset]||0);
+    const c=el("circle",{cx:x(e.start_year),cy,r:4,fill:SRCVAR[e.source_dataset],stroke:"var(--surface-1)","stroke-width":1.5},svg);
+    c.style.cursor="pointer";
+    c.addEventListener("mousemove",evt=>showTip(`<b>${esc(e.area||"—")} · ${esc(e.year_label)}</b><br>${esc((e.description||"").slice(0,180))}${(e.description||"").length>180?"…":""}<br><span class="m">${esc(e.references)}</span>`,evt));
+    c.addEventListener("mouseleave",hideTip);
+    c.addEventListener("click",()=>{ const box=$("#tlDetail"); box.innerHTML=evDetail(e); box.style.display="block"; });
+  });
+  const span=b-a, step=span>2500?500:span>1200?200:span>400?50:25;
+  const yA=top+MACROS.length*rowH;
+  for(let y=Math.ceil(a/step)*step;y<=b;y+=step){ el("line",{x1:x(y),x2:x(y),y1:yA,y2:yA+4,stroke:"var(--border)"},svg); const t=el("text",{x:x(y),y:yA+16,"text-anchor":"middle"},svg); t.textContent=yr(y); }
+}
+$$("[data-tl]").forEach(b=>b.onclick=()=>{ $$("[data-tl]").forEach(x=>x.setAttribute("aria-pressed",x===b)); tlRange=b.dataset.tl.split(",").map(Number); drawTL(); });
+$("#tlType").onchange=drawTL;
+
+// ---------------- Table
+const fill=(sel,vals,lab=v=>v)=>vals.forEach(v=>$(sel).insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(lab(v))}</option>`));
+fill("#fSrc",SRC,v=>SRCLAB[v]); fill("#fReg",MACROS); fill("#fType",TYPES); fill("#fStat",[...new Set(EV.map(e=>e.verification_status))].sort());
+let sortK="start_year", sortDir=-1, page=0; const PER=100; let cur=[];
+function filtered(){
+  const q=$("#q").value.trim().toLowerCase(), s=$("#fSrc").value, r=$("#fReg").value, t=$("#fType").value, st=$("#fStat").value, a=+$("#fFrom").value, b=+$("#fTo").value;
+  return EV.filter(e=>(!s||e.source_dataset===s)&&(!r||e.macro_region===r)&&(!t||e.event_type===t)&&(!st||e.verification_status===st)&&e.start_year>=a&&e.start_year<=b&&
+    (!q||[e.area,e.description,e.primary_cause,e.references,e.environmental_category,e.event_id,e.qc_notes].join(" ").toLowerCase().includes(q)))
+   .sort((x,y)=>{ const A=x[sortK],B=y[sortK]; return (A>B?1:A<B?-1:0)*sortDir; });
+}
+function drawTable(){
+  cur=filtered(); const pages=Math.max(1,Math.ceil(cur.length/PER)); page=Math.min(page,pages-1);
+  $("#count").textContent=`${cur.length.toLocaleString()} of ${EV.length.toLocaleString()} records`;
+  $("#tbody").innerHTML=cur.slice(page*PER,(page+1)*PER).map((e,i)=>`<tr data-i="${page*PER+i}"><td class="num">${yr(e.start_year)}</td><td class="num">${yr(e.end_year)}</td><td><span class="srcdot" style="background:${SRCVAR[e.source_dataset]}" title="${esc(SRCLAB[e.source_dataset])}"></span>${esc(e.area||"—")}</td><td>${esc(e.macro_region)}</td><td>${esc(e.event_type)}</td><td>${esc((e.description||"").slice(0,140))}${(e.description||"").length>140?"…":""}</td><td><span class="badge ${/flag/i.test(e.verification_status)?"flag":""}">${esc(e.verification_status)}</span></td></tr>`).join("");
+  $("#pg").textContent=`Page ${page+1} of ${pages}`;
+  $$("#tbody tr").forEach(tr=>tr.onclick=()=>{ const box=$("#tbDetail"); box.innerHTML=evDetail(cur[+tr.dataset.i]); box.style.display="block"; box.scrollIntoView({block:"nearest"}); });
+}
+["#q","#fSrc","#fReg","#fType","#fStat","#fFrom","#fTo"].forEach(s=>$(s).addEventListener("input",()=>{page=0;drawTable();}));
+$$("th[data-k]").forEach(th=>th.onclick=()=>{ const k=th.dataset.k; sortDir = sortK===k ? -sortDir : 1; sortK=k; drawTable(); });
+$("#prev").onclick=()=>{ if(page>0){page--;drawTable();} }; $("#next").onclick=()=>{ page++; drawTable(); };
+const COLS=["event_id","source_dataset","start_year","end_year","year_label","area","macro_region","event_type","primary_cause","environmental_category","description","references","verification_status","qc_notes"];
+function download(name, text, type){ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+$("#dl").onclick=()=>{ const q=v=>v==null?"":/[",\n]/.test(String(v))?`"${String(v).replace(/"/g,'""')}"`:String(v); download("faminewatch_filtered.csv",[COLS.join(","),...cur.map(e=>COLS.map(c=>q(e[c])).join(","))].join("\n"),"text/csv"); };
+$("#dlj").onclick=()=>download("faminewatch_filtered.json",JSON.stringify(cur,null,1),"application/json");
+
+// ---------------- Sources
+$("#citeBox").textContent =
+`Dataset:
+Puma, M. J., & Chon, S. (2026). FamineWatch Datasets: Compilation of Select Famines and Food Disruptions Around the World (v0.2, beta). Center for Climate Systems Research, Columbia Climate School. https://github.com/mjpuma/faminewatch-datasets
+
+European famine years (1250–1800) — please also cite the original compilation:
+Ljungqvist, F. C., Seim, A., & Collet, D. (2024). Famines in medieval and early modern Europe—Connecting climate and society. WIREs Climate Change, 15(1), e859. https://doi.org/10.1002/wcc.859 (Table A1; CC BY 4.0)
+Alfani, G., & Ó Gráda, C. (Eds.) (2017). Famine in European History. Cambridge University Press.
+Alfani, G., & Ó Gráda, C. (2018). The timing and causes of famines in Europe. Nature Sustainability, 1, 283–288.
+
+Historical entries flagged "Walford (1878)":
+Walford, C. (1878). The famines of the world: past and present. Journal of the Statistical Society of London, 41(3), 433–535.`;
+$("#regSrc tbody").innerHTML=REG.map(r=>`<tr><td>${esc(r)}</td><td>${esc(DATA.region_sources[r])}</td></tr>`).join("");
+$("#chg").innerHTML=DATA.changelog.map(c=>`<tr><td class="num">${esc(c.event_id)}</td><td>${c.field==="(flag)"?'<span class="badge flag">review</span>':esc(c.field)}</td><td>${esc(c.note)}</td></tr>`).join("");
+$("#refs").innerHTML=DATA.references.map(r=>`<li>${esc(r.citation)}</li>`).join("");
+
+function drawAll(){ drawEU(); drawEUBars(); drawTL(); drawTable(); }
+addEventListener("resize",()=>{ clearTimeout(window._rz); window._rz=setTimeout(drawAll,120); });
+drawAll();
+</script>
+</body>
+</html>
