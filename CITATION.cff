@@ -1,0 +1,56 @@
+cff-version: 1.2.0
+message: "If you use this dataset, please cite it as below. When using the European famine years (1250–1800), please also cite Ljungqvist et al. (2024) and Alfani & Ó Gráda (2017, 2018)."
+title: "FamineWatch Datasets: Compilation of Select Famines and Food Disruptions Around the World"
+version: "0.2-beta"
+date-released: "2026-11-23"
+type: dataset
+authors:
+  - family-names: Puma
+    given-names: Michael J.
+    affiliation: "Center for Climate Systems Research, Columbia Climate School, Columbia University"
+    email: mjp38@columbia.edu
+  - family-names: Chon
+    given-names: S.
+repository-code: "https://github.com/mjpuma/faminewatch-datasets"
+license: MIT
+keywords: [famine, food security, food systems, climate, history, early modern Europe, volcanic eruptions, El Niño]
+references:
+  - type: article
+    authors:
+      - family-names: Ljungqvist
+        given-names: Fredrik Charpentier
+      - family-names: Seim
+        given-names: Andrea
+      - family-names: Collet
+        given-names: Dominik
+    title: "Famines in medieval and early modern Europe—Connecting climate and society"
+    journal: "WIREs Climate Change"
+    volume: 15
+    issue: 1
+    start: e859
+    year: 2024
+    doi: 10.1002/wcc.859
+  - type: book
+    authors:
+      - family-names: Alfani
+        given-names: Guido
+      - family-names: "Ó Gráda"
+        given-names: Cormac
+    title: "Famine in European History"
+    publisher:
+      name: Cambridge University Press
+    year: 2017
+    doi: 10.1017/9781316841235
+  - type: article
+    authors:
+      - family-names: Alfani
+        given-names: Guido
+      - family-names: "Ó Gráda"
+        given-names: Cormac
+    title: "The timing and causes of famines in Europe"
+    journal: "Nature Sustainability"
+    volume: 1
+    start: 283
+    end: 288
+    year: 2018
+    doi: 10.1038/s41893-018-0078-0
