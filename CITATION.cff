@@ -12,7 +12,9 @@ authors:
   - family-names: Chon
     given-names: S.
 repository-code: "https://github.com/mjpuma/faminewatch-datasets"
-license: MIT
+license:
+  - CC-BY-4.0
+  - MIT
 keywords: [famine, food security, food systems, climate, history, early modern Europe, volcanic eruptions, El Niño]
 references:
   - type: article

@@ -58,6 +58,12 @@ REFS = {
  "GVP_Agung": "Global Volcanism Program, Smithsonian Institution. Agung (Indonesia): eruption of 18 Feb 1963 – 27 Jan 1964, VEI 5. https://volcano.si.edu/volcano.cfm?vn=264020",
  "WPF2024": "World Peace Foundation (2024). Historic Famines [synthesis table of famines with ≥100,000 deaths since 1870]. https://worldpeacefoundation.org/",
  "AlfaniOGrada2017_T11": "Alfani, G., & Ó Gráda, C. (2017). Famines in Europe: An overview. In G. Alfani & C. Ó Gráda (Eds.), Famine in European History, Table 1.1 'Famines in Europe, 1250–1900'. Cambridge University Press.",
+ "OWID_famines": "Hasell, J., & Roser, M. (2017). Famines. Our World in Data — 'The Our World in Data Dataset of Famines' (global famines 1846–2011 with excess-mortality estimates). https://ourworldindata.org/the-our-world-in-data-dataset-of-famines (CC BY 4.0; underlying estimates from the sources listed per event)",
+ "MishraAadhar2021": "Mishra, V., & Aadhar, S. (2021). Famines and likelihood of consecutive megadroughts in India. npj Climate and Atmospheric Science, 4, 59. https://doi.org/10.1038/s41612-021-00219-1 (CC BY 4.0)",
+ "Kim2025": "Kim, S. W. (2025). Two severe famines (1809–1810, 1814–1815) in Korea during the last stage of the Little Ice Age. Climate of the Past, 21, 1521–1531. https://doi.org/10.5194/cp-21-1521-2025 (CC BY 4.0)",
+ "Bassino2007": "Bassino, J.-P. (2007). Market integration and famines in early modern Japan, 1717–1857. Working paper, Paris School of Economics seminar. https://pseweb.eu/ydepot/semin/texte0708/BAS2007MAR.pdf",
+ "Nakatsuka_PAGES": "Nakatsuka, T. Multi-decadal climate variability as triggers of societal regime shifts in Japan. PAGES Magazine. https://pastglobalchanges.org/node/7109",
+ "Lin2020_REACHES": "Lin, K.-H. E., Wang, P. K., Pai, P.-L., Lin, Y.-S., & Wang, C.-W. (2020). Historical droughts in the Qing dynasty (1644–1911) of China. Climate of the Past, 16, 911–931. https://doi.org/10.5194/cp-16-911-2020 (CC BY 4.0). Data: NOAA/WDS Paleoclimatology, REACHES Chinese Historical Climate Database Qing Dynasty Drought Series, https://www.ncei.noaa.gov/access/paleo-search/study/29472",
  "Esmaili_preprint": "Esmaili, E., Puma, M. J., Ludlow, F., Jobbová, E., Kumar, J., Holm, P., Ljungqvist, F. C., Matthews, J. A., Dahl, J. R., & Seim, A. El Niño amplified food insecurity in early modern Europe. Preprint, Research Square (2026). https://doi.org/10.21203/rs.3.rs-7812038/v1",
 }
 
@@ -461,6 +467,66 @@ for reg, txt in AOG_1800s:
         references="Alfani & Ó Gráda (2017), Table 1.1", severity_info=None,
         verification_status="transcribed from published table (v0.2)", qc_notes=None, _row=None, episode_id=rid))
 pd.DataFrame(aog_rows).to_csv(os.path.join(OUT, "europe_famine_episodes_1800-1900_AlfaniOGrada2017_Table1-1.csv"), index=False)
+# ===== Other published famine datasets (v0.2) =====
+RAW = os.path.join(OUT, "raw")
+def yr_range(lbl):
+    nums = re.findall(r"\d{4}|\d{1,2}(?=\D*$)", lbl)
+    ys = [int(n) for n in re.findall(r"\d+", lbl)]
+    a = ys[0]; b = ys[-1] if len(ys) > 1 else a
+    if b < 100:  # 2-digit suffix
+        b = int(str(a)[:len(str(a))-len(str(b))] + str(b))
+        if b < a: b += 100
+    return a, max(a, b)
+
+OWID_MACRO = [("India","South Asia"),("Bangladesh","South Asia"),("China","East Asia"),("North Korea","East Asia"),
+  ("Cambodia","Southeast Asia"),("Indonesia","Southeast Asia"),("East/Southeast Asia","Multi-region / global"),
+  ("Persia","Middle East & North Africa"),("Greater Syria","Middle East & North Africa"),("Turkey","Middle East & North Africa"),
+  ("Libya","Middle East & North Africa"),("Armenia","Europe"),("USSR","Europe"),("Russia","Europe"),("Europe/USSR","Europe"),
+  ("Ireland","Europe"),("Finland","Europe"),("Germany","Europe"),("Netherlands","Europe"),
+  ("Brazil","Americas"),("USA","Americas")]
+def owid_macro(c):
+    for k, v in OWID_MACRO:
+        if c.startswith(k): return v
+    return "Sub-Saharan Africa"
+ow = pd.read_csv(os.path.join(RAW, "owid_famines_hasell_roser_2017.csv"))
+fmt = lambda v: "" if pd.isna(v) else f"{int(v):,}"
+for _, r in ow.iterrows():
+    a, b = yr_range(str(r.year_label))
+    lo, mid, hi = r.excess_mortality_low, r.excess_mortality_mid, r.excess_mortality_high
+    rng = fmt(mid) if (lo == mid == hi) else f"{fmt(mid)} (range {fmt(lo) or '?'}–{fmt(hi)})"
+    rows.append(dict(source_dataset="Our World in Data famine dataset (Hasell & Roser 2017)",
+        start_year=a, end_year=b, year_label=str(r.year_label), area=r.country, macro_region=owid_macro(r.country),
+        event_type="Famine / food crisis", primary_cause=None, environmental_category=None,
+        description=f"Famine in {r.country}, {r.year_label}; excess mortality {rng}",
+        references=f"Hasell & Roser (2017), Our World in Data; original estimates: {r.owid_source}",
+        excess_mortality_low=None if pd.isna(lo) else int(lo), excess_mortality_mid=int(mid), excess_mortality_high=None if pd.isna(hi) else int(hi),
+        verification_status="transcribed from published dataset (v0.2)", qc_notes=None, _row=None))
+
+for a, b, lbl in [(1344,1345,"1344–1345"),(1630,1632,"1630–1632"),(1702,1704,"1702–1704"),(1769,1771,"1769–1771"),
+                  (1802,1804,"1802–1804"),(1837,1838,"1837–1838"),(1866,1866,"1866"),(1877,1877,"1877"),(1899,1900,"1899–1900")]:
+    rows.append(dict(source_dataset="Mishra & Aadhar (2021) India major drought famines",
+        start_year=a, end_year=b, year_label=lbl, area="India", macro_region="South Asia", event_type="Famine / food crisis",
+        primary_cause="Summer monsoon failure (drought)", environmental_category="Drought",
+        description=f"Major famine in India caused by summer-monsoon drought ({lbl}); one of nine identified for 1200–2018 from Walford (1878) and other sources",
+        references="Mishra & Aadhar (2021), npj Climate and Atmospheric Science 4:59, Supplementary Table 2",
+        verification_status="transcribed from published dataset (v0.2)", qc_notes=None, _row=None))
+
+for a, b, lbl, d in [(1809,1810,"1809–1810","Korea (mainly Chŏlla-do and Kyŏngsang-do); drought and failed barley and rice harvests followed by a severe winter, lasting 12–13 months; ~8.38 million starving people recorded in relief reports across four southern provinces; estimated ~1.02 million deaths (7.8% of population)"),
+                     (1814,1815,"1814–1815","Korea (mainly Chŏlla-do and Kyŏngsang-do); drought, flood damage and early frost, July 1814 – July 1815; estimated ~2.32 million deaths (17.8% of population)")]:
+    rows.append(dict(source_dataset="Regional famine studies (v0.2)", start_year=a, end_year=b, year_label=lbl, area="Korea (Chosŏn)",
+        macro_region="East Asia", event_type="Famine / food crisis", primary_cause="Drought and cold anomalies during the 1809–1815 volcanic cluster",
+        environmental_category="Drought", description=d, references="Kim (2025), Climate of the Past 21:1521–1531",
+        verification_status="transcribed from published study (v0.2)", qc_notes="Mortality figures are the author's estimates from Chosŏn relief and population records.", _row=None))
+
+for a, b, lbl, name, ref in [(1459,1460,"1459–1460","Kanshō famine (western Japan); preceded the Ōnin War (1467–77)","Nakatsuka, PAGES Magazine"),
+                             (1731,1733,"1731–1733","Kyōhō famine","Bassino (2007)"),
+                             (1783,1786,"1783–1786","Tenmei famine","Bassino (2007)"),
+                             (1833,1838,"1833–1838","Tenpō famine","Bassino (2007)")]:
+    rows.append(dict(source_dataset="Regional famine studies (v0.2)", start_year=a, end_year=b, year_label=lbl, area="Japan",
+        macro_region="East Asia", event_type="Famine / food crisis", primary_cause=None, environmental_category=None,
+        description=f"{name}, Japan ({lbl})" + ("; one of the three most severe famines of the 18th–19th centuries" if ref.startswith("Bassino") else ""),
+        references=ref, verification_status="transcribed from published study (v0.2)", qc_notes=None, _row=None))
+
 ev = pd.DataFrame(rows)
 ev = ev.sort_values(["start_year","source_dataset","area"], ascending=[False, True, True]).reset_index(drop=True)
 ids = []
@@ -485,7 +551,11 @@ for _, r in ev.iterrows():
 for n in NEW:
     pass
 COLS = ["event_id","source_dataset","start_year","end_year","year_label","area","macro_region","event_type",
-        "primary_cause","environmental_category","description","references","verification_status","qc_notes"]
+        "primary_cause","environmental_category","description","excess_mortality_low","excess_mortality_mid","excess_mortality_high",
+        "references","verification_status","qc_notes"]
+for c in ["excess_mortality_low","excess_mortality_mid","excess_mortality_high"]:
+    if c not in ev: ev[c] = None
+    ev[c] = ev[c].astype("Int64")
 ev = ev[COLS]
 
 refs_out = [dict(key=k, citation=v, group="v0.2 sources") for k, v in REFS.items()]
@@ -523,7 +593,8 @@ bundle = dict(
     europe=dict(regions=REGION_ORDER, episodes=json.loads(ep_df.to_json(orient="records", force_ascii=False))),
     references=json.loads(refs_df.to_json(orient="records", force_ascii=False)),
     changelog=json.loads(log_df.groupby(["event_id","note"], sort=False).agg(field=("field", lambda f: ", ".join(dict.fromkeys(f)))).reset_index().to_json(orient="records", force_ascii=False)),
-    region_sources=REGION_SRC)
+    region_sources=REGION_SRC,
+    china_qing=json.loads(pd.read_csv(os.path.join(OUT, "raw", "reaches_qing_1644-1911_counts.csv"))[["year","famine_records","famine_sites"]].to_json(orient="records")))
 tpl = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "explorer_template.html")).read()
 os.makedirs(os.path.join(REPO, "docs"), exist_ok=True)
 data_js = json.dumps(bundle, ensure_ascii=False).replace("</", "<\\/")
