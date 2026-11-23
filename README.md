@@ -4,6 +4,22 @@
 
 A curated, citable compilation of documented famines and severe food-system disruptions, from historical literature and humanitarian assessments, **plus the regional famine-year chronology for medieval and early modern Europe (1250–1800)** used in recent climate–famine research, and **openly licensed famine datasets for other world regions** (global 1846–2011, India, Korea, Japan, Qing China).
 
+## Licence
+
+**Data: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)** · **Code: MIT.** See [`LICENSE-DATA.md`](LICENSE-DATA.md) for full terms and attributions.
+
+This dataset includes records from the following openly licensed sources. Each keeps its own licence and must be credited when you reuse its records:
+
+| Source | What it contributes | Licence |
+|---|---|---|
+| **Ljungqvist, Seim & Collet (2024)**, *WIREs Climate Change* 15(1): e859, [doi:10.1002/wcc.859](https://doi.org/10.1002/wcc.859) | European regional famine years, 1250–1800 (Table A1), revised and expanded from Alfani & Ó Gráda (2017, 2018) | **CC BY 4.0** |
+| **Hasell & Roser (2017)**, *Our World in Data*, ["Famines"](https://ourworldindata.org/the-our-world-in-data-dataset-of-famines) | Global famines with excess mortality, 1846–2011 | **CC BY 4.0** |
+| **Mishra & Aadhar (2021)**, *npj Climate and Atmospheric Science* 4: 59, [doi:10.1038/s41612-021-00219-1](https://doi.org/10.1038/s41612-021-00219-1) | India, major drought famines 1344–1900 | **CC BY 4.0** |
+| **Kim (2025)**, *Climate of the Past* 21: 1521–1531, [doi:10.5194/cp-21-1521-2025](https://doi.org/10.5194/cp-21-1521-2025) | Korea, famines of 1809–10 and 1814–15 | **CC BY 4.0** |
+| **Lin et al. (2020)**, *Climate of the Past* 16: 911–931; REACHES data from **NOAA's public data archive** ([World Data Service for Paleoclimatology](https://www.ncei.noaa.gov/access/paleo-search/study/29472)) | Qing China, yearly famine-record counts 1644–1911 | NOAA public data (cite publication and online resource); paper CC BY 4.0 |
+
+The changes we made to each source (transcription, splitting multi-year cells, one flagged correction kept alongside the printed value) are listed in `LICENSE-DATA.md`.
+
 **Explore it in your browser:** open [`docs/index.html`](docs/index.html) (or the GitHub Pages site once Pages is enabled for the `/docs` folder). The explorer has an interactive region × year famine heatmap for Europe, a global timeline, a searchable/filterable table with CSV/JSON download of any filtered subset, and the full source list and change log.
 
 ---
@@ -123,7 +139,7 @@ This is a **select compilation**, not an exhaustive global list. It is intended 
 
 > Puma, M. J., & Chon, S. (2026). *FamineWatch Datasets: Compilation of Select Famines and Food Disruptions Around the World* (v0.2, beta). Center for Climate Systems Research, Columbia Climate School, Columbia University at NASA Goddard Institute for Space Studies. https://github.com/mjpuma/faminewatch-datasets
 
-When using the European famine years, please also cite:
+When using the European famine years, **please also cite Ljungqvist et al. (2024)**, whose Table A1 is the source of these records, and the works it builds on:
 
 > Ljungqvist, F. C., Seim, A., & Collet, D. (2024). Famines in medieval and early modern Europe—Connecting climate and society. *WIREs Climate Change*, 15(1), e859. https://doi.org/10.1002/wcc.859
 >

@@ -107,7 +107,7 @@ a{color:var(--accent-ink)}
 <section class="panel on" id="p-eu">
   <div class="card">
     <h2>Famine years by European region, 1250–1800</h2>
-    <p class="note">Each filled cell is a year in which famine conditions were recorded in that region (Ljungqvist et al. 2024, Table A1, revised from Alfani &amp; Ó Gráda 2017, 2018). Presence only — the chronology records neither severity nor geographic extent within a region. Hover a cell for the episode; click to see its sources.</p>
+    <p class="note">Each filled cell is a year in which famine conditions were recorded in that region. Source: <a href="https://doi.org/10.1002/wcc.859">Ljungqvist, Seim &amp; Collet (2024), <i>WIREs Climate Change</i> 15(1):e859</a>, Table A1 (CC BY 4.0), revised and expanded from Alfani &amp; Ó Gráda (2017, 2018). Presence only — the chronology records neither severity nor geographic extent within a region. Hover a cell for the episode; click to see its sources.</p>
     <div class="controls">
       <span class="small">Period</span>
       <button class="chip" aria-pressed="true" data-range="1250,1800">1250–1800</button>
@@ -378,19 +378,21 @@ $("#dlj").onclick=()=>download("faminewatch_filtered.json",JSON.stringify(cur,nu
 
 // ---------------- Sources
 $("#citeBox").textContent =
-`Dataset:
+`Licence: data CC BY 4.0; code MIT. See LICENSE-DATA.md in the repository for attributions and changes made.
+
+Dataset:
 Puma, M. J., & Chon, S. (2026). FamineWatch Datasets: Compilation of Select Famines and Food Disruptions Around the World (v0.2, beta). Center for Climate Systems Research, Columbia Climate School. https://github.com/mjpuma/faminewatch-datasets
 
 European famine years (1250–1800) — please also cite the original compilation:
-Ljungqvist, F. C., Seim, A., & Collet, D. (2024). Famines in medieval and early modern Europe—Connecting climate and society. WIREs Climate Change, 15(1), e859. https://doi.org/10.1002/wcc.859 (Table A1; CC BY 4.0)
+Ljungqvist, F. C., Seim, A., & Collet, D. (2024). Famines in medieval and early modern Europe—Connecting climate and society. WIREs Climate Change, 15(1), e859. https://doi.org/10.1002/wcc.859 (Table A1; CC BY 4.0) — the source of the European famine years 1250–1800
 Alfani, G., & Ó Gráda, C. (Eds.) (2017). Famine in European History. Cambridge University Press.
 Alfani, G., & Ó Gráda, C. (2018). The timing and causes of famines in Europe. Nature Sustainability, 1, 283–288.
 
 Other datasets included (cite the original when using their records):
-Hasell, J., & Roser, M. (2017). Famines. Our World in Data (CC BY 4.0).
-Mishra, V., & Aadhar, S. (2021). npj Climate and Atmospheric Science, 4, 59 (CC BY 4.0).
-Kim, S. W. (2025). Climate of the Past, 21, 1521–1531 (CC BY 4.0).
-Lin, K.-H. E., et al. (2020). Climate of the Past, 16, 911–931; REACHES data via NOAA/WDS Paleoclimatology.
+Hasell, J., & Roser, M. (2017). Famines. Our World in Data. https://ourworldindata.org/the-our-world-in-data-dataset-of-famines (CC BY 4.0)
+Mishra, V., & Aadhar, S. (2021). Famines and likelihood of consecutive megadroughts in India. npj Climate and Atmospheric Science, 4, 59. https://doi.org/10.1038/s41612-021-00219-1 (CC BY 4.0)
+Kim, S. W. (2025). Two severe famines (1809–1810, 1814–1815) in Korea during the last stage of the Little Ice Age. Climate of the Past, 21, 1521–1531. https://doi.org/10.5194/cp-21-1521-2025 (CC BY 4.0)
+Lin, K.-H. E., et al. (2020). Historical droughts in the Qing dynasty (1644–1911) of China. Climate of the Past, 16, 911–931 (CC BY 4.0); data from NOAA's public data archive (World Data Service for Paleoclimatology), https://www.ncei.noaa.gov/access/paleo-search/study/29472
 
 Historical entries flagged "Walford (1878)":
 Walford, C. (1878). The famines of the world: past and present. Journal of the Statistical Society of London, 41(3), 433–535.`;
