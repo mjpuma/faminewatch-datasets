@@ -94,7 +94,7 @@ a{color:var(--accent-ink)}
 <header style="position:relative">
   <button class="btn toggle" id="themeBtn" title="Toggle light/dark">Light / dark</button>
   <h1>FamineWatch Datasets — Famine Explorer</h1>
-  <p class="sub">A compilation of documented famines and food-system disruptions, plus the regional famine-year chronology for medieval and early modern Europe (1250–1800) of Ljungqvist, Seim &amp; Collet (2024). Version 0.2 (beta) · Center for Climate Systems Research, Columbia Climate School.</p>
+  <p class="sub">A compilation of documented famines and food-system disruptions, combined with openly licensed famine datasets: the European regional chronology of Ljungqvist, Seim &amp; Collet (2024), Our World in Data's global famine dataset, India's major drought famines (Mishra &amp; Aadhar 2021), Korean, Japanese and Qing-China records. Version 0.2 (beta) · Center for Climate Systems Research, Columbia Climate School.</p>
   <div class="kpis" id="kpis"></div>
 </header>
 <nav role="tablist">
@@ -145,6 +145,11 @@ a{color:var(--accent-ink)}
     <div id="tlChart"></div>
     <div id="tlDetail" class="detail" style="display:none"></div>
   </div>
+  <div class="card">
+    <h2>China, Qing dynasty (1644–1911): famine records per year</h2>
+    <p class="note">Number of local historical records (mainly gazetteers) reporting famine in each year, from the REACHES database (Lin et al. 2020; NOAA/WDS Paleoclimatology). An index of how widely famine was reported, not of mortality. Hover for values.</p>
+    <div id="cnChart"></div>
+  </div>
 </section>
 
 <section class="panel" id="p-tb">
@@ -165,7 +170,7 @@ a{color:var(--accent-ink)}
     <div class="small" id="count"></div>
     <div class="tablewrap"><table><thead><tr>
       <th data-k="start_year">Start ↕</th><th data-k="end_year">End</th><th data-k="area">Area</th><th data-k="macro_region">Region</th>
-      <th data-k="event_type">Type</th><th>Description</th><th data-k="verification_status">Status</th></tr></thead><tbody id="tbody"></tbody></table></div>
+      <th data-k="event_type">Type</th><th data-k="excess_mortality_mid">Excess deaths</th><th>Description</th><th data-k="verification_status">Status</th></tr></thead><tbody id="tbody"></tbody></table></div>
     <div class="pager"><button class="btn" id="prev">‹ Prev</button><span id="pg"></span><button class="btn" id="next">Next ›</button></div>
     <div id="tbDetail" class="detail" style="display:none;margin-top:12px"></div>
   </div>
@@ -202,10 +207,10 @@ const el = (t, a={}, p) => { const e=document.createElementNS(NS,t); for(const k
 const esc = s => s==null ? "" : String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const yr = y => y<0 ? `${-y} BCE` : `${y}`;
 const EV = DATA.events, EP = DATA.europe.episodes, REG = DATA.europe.regions;
-const SRC = ["Puma & Chon (2025) beta compilation","Ljungqvist et al. (2024) Table A1","Alfani & Ó Gráda (2017) Table 1.1, 1800–1900","Puma & Chon compilation — v0.2 additions"];
-const SRCLAB = {[SRC[0]]:"Puma & Chon compilation (beta)",[SRC[1]]:"Ljungqvist et al. (2024), Table A1",[SRC[2]]:"Alfani & Ó Gráda (2017), Table 1.1 (1800–1900)",[SRC[3]]:"v0.2 additions"};
+const SRC = ["Puma & Chon (2025) beta compilation","Puma & Chon compilation — v0.2 additions","Ljungqvist et al. (2024) Table A1","Alfani & Ó Gráda (2017) Table 1.1, 1800–1900","Our World in Data famine dataset (Hasell & Roser 2017)","Mishra & Aadhar (2021) India major drought famines","Regional famine studies (v0.2)"];
+const SRCLAB = {[SRC[0]]:"Puma & Chon compilation (beta)",[SRC[1]]:"Puma & Chon compilation (v0.2 additions)",[SRC[2]]:"Ljungqvist et al. (2024), Table A1",[SRC[3]]:"Alfani & Ó Gráda (2017), Table 1.1 (1800–1900)",[SRC[4]]:"Our World in Data (Hasell & Roser 2017)",[SRC[5]]:"Mishra & Aadhar (2021), India",[SRC[6]]:"Regional studies (Korea, Japan)"};
 // colour by group (3 groups keeps the dot timeline within the all-pairs-safe palette)
-const GROUPS = [["Puma & Chon compilation",[SRC[0]],"var(--series-1)"],["European regional chronologies",[SRC[1],SRC[2]],"var(--series-2)"],["v0.2 additions",[SRC[3]],"var(--series-3)"]];
+const GROUPS = [["Puma & Chon compilation",[SRC[0],SRC[1]],"var(--series-1)"],["European regional chronologies",[SRC[2],SRC[3]],"var(--series-2)"],["Other published famine datasets",[SRC[4],SRC[5],SRC[6]],"var(--series-3)"]];
 const SRCVAR = {}; GROUPS.forEach(([,ss,c])=>ss.forEach(s=>SRCVAR[s]=c));
 
 // theme toggle
@@ -331,7 +336,7 @@ function drawTL(){
   const svg=el("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Timeline of events by region"},host);
   MACROS.forEach((m,i)=>{ const y=top+i*rowH; el("line",{x1:lab,x2:W-padR,y1:y+rowH/2,y2:y+rowH/2,stroke:"var(--grid)"},svg); const t=el("text",{x:lab-8,y:y+rowH/2+4,"text-anchor":"end"},svg); t.textContent=m; t.style.fill="var(--text-primary)"; });
   // deterministic vertical jitter by source
-  const off={[SRC[0]]:-7,[SRC[1]]:0,[SRC[2]]:0,[SRC[3]]:7};
+  const off={[SRC[0]]:-7,[SRC[1]]:-7,[SRC[2]]:0,[SRC[3]]:0,[SRC[4]]:7,[SRC[5]]:7,[SRC[6]]:7};
   ev.forEach(e=>{ const i=MACROS.indexOf(e.macro_region), cy=top+i*rowH+rowH/2+(off[e.source_dataset]||0);
     const c=el("circle",{cx:x(e.start_year),cy,r:4,fill:SRCVAR[e.source_dataset],stroke:"var(--surface-1)","stroke-width":1.5},svg);
     c.style.cursor="pointer";
@@ -359,14 +364,14 @@ function filtered(){
 function drawTable(){
   cur=filtered(); const pages=Math.max(1,Math.ceil(cur.length/PER)); page=Math.min(page,pages-1);
   $("#count").textContent=`${cur.length.toLocaleString()} of ${EV.length.toLocaleString()} records`;
-  $("#tbody").innerHTML=cur.slice(page*PER,(page+1)*PER).map((e,i)=>`<tr data-i="${page*PER+i}"><td class="num">${yr(e.start_year)}</td><td class="num">${yr(e.end_year)}</td><td><span class="srcdot" style="background:${SRCVAR[e.source_dataset]}" title="${esc(SRCLAB[e.source_dataset])}"></span>${esc(e.area||"—")}</td><td>${esc(e.macro_region)}</td><td>${esc(e.event_type)}</td><td>${esc((e.description||"").slice(0,140))}${(e.description||"").length>140?"…":""}</td><td><span class="badge ${/flag/i.test(e.verification_status)?"flag":""}">${esc(e.verification_status)}</span></td></tr>`).join("");
+  $("#tbody").innerHTML=cur.slice(page*PER,(page+1)*PER).map((e,i)=>`<tr data-i="${page*PER+i}"><td class="num">${yr(e.start_year)}</td><td class="num">${yr(e.end_year)}</td><td><span class="srcdot" style="background:${SRCVAR[e.source_dataset]}" title="${esc(SRCLAB[e.source_dataset])}"></span>${esc(e.area||"—")}</td><td>${esc(e.macro_region)}</td><td>${esc(e.event_type)}</td><td class="num">${e.excess_mortality_mid!=null?e.excess_mortality_mid.toLocaleString():""}</td><td>${esc((e.description||"").slice(0,140))}${(e.description||"").length>140?"…":""}</td><td><span class="badge ${/flag/i.test(e.verification_status)?"flag":""}">${esc(e.verification_status)}</span></td></tr>`).join("");
   $("#pg").textContent=`Page ${page+1} of ${pages}`;
   $$("#tbody tr").forEach(tr=>tr.onclick=()=>{ const box=$("#tbDetail"); box.innerHTML=evDetail(cur[+tr.dataset.i]); box.style.display="block"; box.scrollIntoView({block:"nearest"}); });
 }
 ["#q","#fSrc","#fReg","#fType","#fStat","#fFrom","#fTo"].forEach(s=>$(s).addEventListener("input",()=>{page=0;drawTable();}));
 $$("th[data-k]").forEach(th=>th.onclick=()=>{ const k=th.dataset.k; sortDir = sortK===k ? -sortDir : 1; sortK=k; drawTable(); });
 $("#prev").onclick=()=>{ if(page>0){page--;drawTable();} }; $("#next").onclick=()=>{ page++; drawTable(); };
-const COLS=["event_id","source_dataset","start_year","end_year","year_label","area","macro_region","event_type","primary_cause","environmental_category","description","references","verification_status","qc_notes"];
+const COLS=["event_id","source_dataset","start_year","end_year","year_label","area","macro_region","event_type","primary_cause","environmental_category","description","excess_mortality_low","excess_mortality_mid","excess_mortality_high","references","verification_status","qc_notes"];
 function download(name, text, type){ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
 $("#dl").onclick=()=>{ const q=v=>v==null?"":/[",\n]/.test(String(v))?`"${String(v).replace(/"/g,'""')}"`:String(v); download("faminewatch_filtered.csv",[COLS.join(","),...cur.map(e=>COLS.map(c=>q(e[c])).join(","))].join("\n"),"text/csv"); };
 $("#dlj").onclick=()=>download("faminewatch_filtered.json",JSON.stringify(cur,null,1),"application/json");
@@ -381,13 +386,37 @@ Ljungqvist, F. C., Seim, A., & Collet, D. (2024). Famines in medieval and early 
 Alfani, G., & Ó Gráda, C. (Eds.) (2017). Famine in European History. Cambridge University Press.
 Alfani, G., & Ó Gráda, C. (2018). The timing and causes of famines in Europe. Nature Sustainability, 1, 283–288.
 
+Other datasets included (cite the original when using their records):
+Hasell, J., & Roser, M. (2017). Famines. Our World in Data (CC BY 4.0).
+Mishra, V., & Aadhar, S. (2021). npj Climate and Atmospheric Science, 4, 59 (CC BY 4.0).
+Kim, S. W. (2025). Climate of the Past, 21, 1521–1531 (CC BY 4.0).
+Lin, K.-H. E., et al. (2020). Climate of the Past, 16, 911–931; REACHES data via NOAA/WDS Paleoclimatology.
+
 Historical entries flagged "Walford (1878)":
 Walford, C. (1878). The famines of the world: past and present. Journal of the Statistical Society of London, 41(3), 433–535.`;
 $("#regSrc tbody").innerHTML=REG.map(r=>`<tr><td>${esc(r)}</td><td>${esc(DATA.region_sources[r])}</td></tr>`).join("");
 $("#chg").innerHTML=DATA.changelog.map(c=>`<tr><td class="num">${esc(c.event_id)}</td><td>${c.field==="(flag)"?'<span class="badge flag">review</span>':esc(c.field)}</td><td>${esc(c.note)}</td></tr>`).join("");
 $("#refs").innerHTML=DATA.references.map(r=>`<li>${esc(r.citation)}</li>`).join("");
 
-function drawAll(){ drawEU(); drawEUBars(); drawTL(); drawTable(); }
+function drawCN(){
+  const host=$("#cnChart"); if(!host) return; host.innerHTML="";
+  const D=DATA.china_qing||[]; if(!D.length) return;
+  const W=Math.max(640,host.clientWidth||1000), H=220, l=44, r=14, t=10, b=26;
+  const x0=D[0].year, x1=D[D.length-1].year, ymax=Math.max(...D.map(d=>d.famine_records));
+  const X=y=>l+(y-x0)/(x1-x0)*(W-l-r), Y=v=>t+(1-v/ymax)*(H-t-b);
+  const svg=el("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Famine records per year in Qing China"},host);
+  [0,100,200].filter(v=>v<=ymax).forEach(v=>{ el("line",{x1:l,x2:W-r,y1:Y(v),y2:Y(v),stroke:"var(--grid)"},svg); const tx=el("text",{x:l-6,y:Y(v)+4,"text-anchor":"end"},svg); tx.textContent=v; });
+  el("path",{d:D.map((d,i)=>(i?"L":"M")+X(d.year)+","+Y(d.famine_records)).join(""),fill:"none",stroke:"var(--series-1)","stroke-width":2,"stroke-linejoin":"round"},svg);
+  for(let y=1650;y<=1910;y+=50){ const tx=el("text",{x:X(y),y:H-8,"text-anchor":"middle"},svg); tx.textContent=y; }
+  const ch=el("line",{y1:t,y2:H-b,stroke:"var(--text-muted)","stroke-dasharray":"2 3",opacity:0},svg);
+  const dot=el("circle",{r:4,fill:"var(--series-1)",stroke:"var(--surface-1)","stroke-width":2,opacity:0},svg);
+  const hit=el("rect",{x:l,y:t,width:W-l-r,height:H-t-b,fill:"transparent"},svg);
+  hit.addEventListener("mousemove",ev=>{ const bb=svg.getBoundingClientRect(); const px=(ev.clientX-bb.left)*(W/bb.width); const yy=Math.round(x0+(px-l)/(W-l-r)*(x1-x0)); const d=D.find(q=>q.year===yy); if(!d) return;
+    ch.setAttribute("x1",X(yy)); ch.setAttribute("x2",X(yy)); ch.setAttribute("opacity",1); dot.setAttribute("cx",X(yy)); dot.setAttribute("cy",Y(d.famine_records)); dot.setAttribute("opacity",1);
+    showTip(`<b>${yy}</b><br>${d.famine_records} famine records<br><span class="m">${d.famine_sites} sites reporting famine</span>`,ev); });
+  hit.addEventListener("mouseleave",()=>{ch.setAttribute("opacity",0);dot.setAttribute("opacity",0);hideTip();});
+}
+function drawAll(){ drawEU(); drawEUBars(); drawTL(); drawCN(); drawTable(); }
 addEventListener("resize",()=>{ clearTimeout(window._rz); window._rz=setTimeout(drawAll,120); });
 drawAll();
 </script>

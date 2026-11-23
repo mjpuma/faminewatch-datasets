@@ -2,7 +2,7 @@
 
 # FamineWatch Datasets (v0.2, beta)
 
-A curated, citable compilation of documented famines and severe food-system disruptions, from historical literature and humanitarian assessments, **plus the regional famine-year chronology for medieval and early modern Europe (1250–1800)** used in recent climate–famine research.
+A curated, citable compilation of documented famines and severe food-system disruptions, from historical literature and humanitarian assessments, **plus the regional famine-year chronology for medieval and early modern Europe (1250–1800)** used in recent climate–famine research, and **openly licensed famine datasets for other world regions** (global 1846–2011, India, Korea, Japan, Qing China).
 
 **Explore it in your browser:** open [`docs/index.html`](docs/index.html) (or the GitHub Pages site once Pages is enabled for the `/docs` folder). The explorer has an interactive region × year famine heatmap for Europe, a global timeline, a searchable/filterable table with CSV/JSON download of any filtered subset, and the full source list and change log.
 
@@ -17,6 +17,8 @@ A curated, citable compilation of documented famines and severe food-system disr
 | `data/europe_famine_region_year_1250-1800_LjungqvistEtAl2024.csv` | The same chronology as a long region × year table (9 regions × 551 years; `famine` = 1/0 as printed; `famine_corrected` applies the Italy 1539–40 fix). |
 | `data/europe_famine_episodes_1800-1900_AlfaniOGrada2017_Table1-1.csv` | 19th-century regional famine years from Alfani & Ó Gráda (2017), Table 1.1 (major multi-region famines only). |
 | `data/europe_famine_region_year_wide_1250-1800_LjungqvistEtAl2024.csv` | Wide year × region 0/1 matrix — ready for time-series analysis. |
+| `data/raw/owid_famines_hasell_roser_2017.csv` | Our World in Data famine dataset (77 famines, 1846–2011, with low/mid/high excess-mortality estimates), as published. |
+| `data/raw/reaches_qing_1644-1911_counts.csv` | Qing China (1644–1911): yearly counts of historical records and sites reporting famine, drought, locusts, crop failure and unrest (REACHES; Lin et al. 2020). |
 | `data/references.csv` | Full citations (corrected beta reference list + v0.2 sources). |
 | `data/changelog_v0.2.csv` | Every correction applied in v0.2 (old → new value, reason) and every item flagged for review. |
 | `famine_database_v0.2.xlsx` | All of the above as one workbook. |
@@ -59,6 +61,27 @@ The European records are the regional famine-year list of **Ljungqvist, Seim & C
 * Comma-separated years in one cell (Russia/Ukraine `1279, 1282`; `1468, 1472`; `1674, 1677`) are split into separate episodes.
 
 ---
+
+## Other famine datasets added in v0.2
+
+Only sources whose licence allows redistribution, or individual dated facts cited to a published study, are included.
+
+| Source | Coverage | Records | Licence |
+|---|---|---|---|
+| Hasell & Roser (2017), *Our World in Data* famine dataset | Global, 1846–2011; excess mortality (low/mid/high) | 77 events | CC BY 4.0 |
+| Mishra & Aadhar (2021), *npj Climate and Atmospheric Science* 4:59 | India, major drought famines 1344–1900 | 9 events | CC BY 4.0 |
+| Kim (2025), *Climate of the Past* 21:1521–1531 | Korea, famines of 1809–10 and 1814–15, with mortality estimates | 2 events | CC BY 4.0 |
+| Bassino (2007); Nakatsuka (PAGES Magazine) | Japan: Kanshō (1459–60), Kyōhō (1731–33), Tenmei (1783–86), Tenpō (1833–38) famines | 4 events | dated facts with citation |
+| Lin et al. (2020), REACHES via NOAA/WDS Paleoclimatology | Qing China 1644–1911, yearly famine-record counts (index, not events) | 268 years | CC BY 4.0 paper; NOAA open data |
+
+Note on REACHES: the per-variable "Total number" lines in NOAA's file headers are swapped between the *records* and *sites* files. The data columns themselves are consistent (records ≥ sites every year, and the column sums match the totals printed in the other file).
+
+**Not included, and why:**
+* **World Peace Foundation Historic Famines dataset** (1870–present, the most comprehensive modern catalogue): the files carry an "all rights reserved" notice and no reuse licence. Worth asking WPF (worldpeacefoundation@tufts.edu) for permission.
+* **EM-DAT** (drought and famine disasters): its terms do not allow redistribution.
+* **Saito (2010) chronology of Japanese famines** (281 famines, 6th–19th c.): published in a book that prohibits reproduction without the authors' permission.
+* **Chosŏn (Korea) famine series** from the *Veritable Records* (e.g., the 1670–71 Kyŏngsin and 1695–96 Ŭlbyŏng famines): published studies were not yet checked for licence and figures.
+* **Africa before 1860**: chronologies (Pankhurst for Ethiopia; Nicholson's documentary database for the continent) are not available as open event lists; Nicholson's data are on NOAA/WDS and could be added as an index.
 
 ## Corrections and flags in v0.2
 
