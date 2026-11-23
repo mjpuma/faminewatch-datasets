@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/faminewatch-datasets-logo-opaque.png" width="700" alt="FamineWatch Datasets logo showing a wheat stalk, global network and historical time-series" /></p>
+<p align="center"><img src="assets/faminewatch-datasets-logo-full-resolution.png" width="700" alt="FamineWatch Datasets logo showing a wheat stalk, global network and historical time-series" /></p>
 
 # FamineWatch Datasets (v0.2, beta)
 
